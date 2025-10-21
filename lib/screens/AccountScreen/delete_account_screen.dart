@@ -376,7 +376,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
                             isLoading
                                 ? CircularProgressIndicator(color: Colors.white)
                                 : Text(
-                                  'Delete My Account',
+                                  'Delete My Account ',
                                   style: TextStyle(
                                     fontSize: 18.sp,
                                     fontWeight: FontWeight.bold,
