@@ -25,16 +25,13 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
   void initState() {
     super.initState();
 
-    // Try to find the controller or create a new one
     try {
       controller = Get.find<SatelliteController>();
     } catch (e) {
-      // If controller not found, create a new one
       controller = Get.put(SatelliteController());
       debugPrint('Created new SatelliteController as it was not found: $e');
     }
 
-    // Setup animations
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 20),
@@ -52,12 +49,11 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Using didChangeDependencies to ensure context is fully ready
+
     _loadSatelliteDetailsDelayed();
   }
 
   void _loadSatelliteDetailsDelayed() {
-    // Use Future.delayed to ensure it runs after current build cycle
     Future.delayed(Duration.zero, () {
       controller.prepareSatelliteDetails(widget.satelliteId);
     });
@@ -98,7 +94,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
 
           return Stack(
             children: [
-              // Space background with orbits
               CustomPaint(
                 size: Size.infinite,
                 painter: OrbitBackgroundPainter(
@@ -107,7 +102,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
                 ),
               ),
 
-              // Content
               SafeArea(
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
@@ -115,7 +109,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header with satellite name and back button
                       Padding(
                         padding: EdgeInsets.only(
                           top: 20.h,
@@ -125,7 +118,7 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
                         child: Row(
                           children: [
                             GestureDetector(
-                              onTap: () => Get.back(),
+                              onTap: () => Navigator.of(context).pop(),
                               child: Container(
                                 padding: EdgeInsets.all(8.w),
                                 decoration: BoxDecoration(
@@ -161,12 +154,9 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
 
                       SizedBox(height: 20.h),
 
-                      // Animated satellite visualization
                       _buildSatelliteVisualization(satellite, satelliteColor),
 
                       SizedBox(height: 24.h),
-
-                      // Satellite type and launched by
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: Row(
@@ -188,7 +178,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
 
                       SizedBox(height: 24.h),
 
-                      // Satellite description
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: Container(
@@ -235,7 +224,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
 
                       SizedBox(height: 24.h),
 
-                      // Satellite stats section
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: Text(
@@ -251,7 +239,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
 
                       SizedBox(height: 16.h),
 
-                      // Stats grid
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: GridView.count(
@@ -309,7 +296,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Earth
           Container(
             width: 80.w,
             height: 80.w,
@@ -327,7 +313,7 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
             child: ClipOval(
               child: Image.asset('assets/images/earth.png', fit: BoxFit.cover),
             ),
-          ), // Orbit path
+          ),
           Container(
             width: 220.w,
             height: 220.w,
@@ -340,7 +326,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
             ),
           ),
 
-          // Satellite orbiting around Earth
           AnimatedBuilder(
             animation: _orbitAnimation,
             builder: (context, child) {
@@ -400,43 +385,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
               );
             },
           ),
-
-          // Solar panels or satellite parts (decorative)
-          // AnimatedBuilder(
-          //   animation: _orbitAnimation,
-          //   builder: (context, child) {
-          //     final angle = _orbitAnimation.value;
-          //     final radius = 110.w;
-          //     final x = radius * math.cos(angle);
-          //     final y = radius * math.sin(angle);
-
-          //     return Transform.translate(
-          //       offset: Offset(x, y),
-          //       child: Transform.rotate(
-          //         angle: _rotationAnimation.value,
-          //         child: Container(
-          //           width: 90.w,
-          //           height: 10.w,
-          //           decoration: BoxDecoration(
-          //             color: Colors.grey.withOpacity(0.5),
-          //             borderRadius: BorderRadius.circular(2.r),
-          //             border: Border.all(
-          //               color: Colors.white.withOpacity(0.6),
-          //               width: 0.5.w,
-          //             ),
-          //             boxShadow: [
-          //               BoxShadow(
-          //                 color: Colors.white.withOpacity(0.2),
-          //                 blurRadius: 5,
-          //                 spreadRadius: 1,
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // ),
         ],
       ),
     );
@@ -479,13 +427,7 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
     IconData icon,
     Color color,
   ) {
-    // Get the full color without opacity for the border
-    final borderColor = Color.fromARGB(
-      255, // Full opacity
-      color.red,
-      color.green,
-      color.blue,
-    );
+    final borderColor = Color.fromARGB(255, color.red, color.green, color.blue);
 
     return Container(
       padding: EdgeInsets.all(12.w),
@@ -617,7 +559,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
     );
   }
 
-  // Generate a unique color based on satellite name
   Color _getColorForSatellite(String name) {
     if (name.toLowerCase().contains("sputnik")) {
       return Colors.orange;
@@ -630,7 +571,6 @@ class _SatelliteDetailsScreenState extends State<SatelliteDetailsScreen>
     } else if (name.toLowerCase().contains("iss")) {
       return Colors.amber;
     } else {
-      // Generate a pseudorandom color based on name
       final hashCode = name.hashCode;
       return Color((hashCode & 0xFFFFFF) | 0x6F000000);
     }
@@ -651,13 +591,11 @@ class OrbitBackgroundPainter extends CustomPainter {
           ..strokeWidth = 2.0
           ..strokeCap = StrokeCap.round;
 
-    // Draw stars in background
     for (int i = 0; i < 100; i++) {
       final radius = (i % 5) * 1.0 + 1.0;
       final x = (i * 17 + animation * 50) % size.width;
       final y = (i * 19 + animation * 30) % size.height;
 
-      // Alternate between white and the base color
       if (i % 3 == 0) {
         paint.color = Colors.white.withOpacity(0.7);
       } else {
@@ -667,7 +605,6 @@ class OrbitBackgroundPainter extends CustomPainter {
       canvas.drawCircle(Offset(x, y), radius, paint);
     }
 
-    // Draw subtle orbit lines
     final center = Offset(size.width / 2, size.height / 2);
     for (int i = 1; i <= 3; i++) {
       final orbitPaint =

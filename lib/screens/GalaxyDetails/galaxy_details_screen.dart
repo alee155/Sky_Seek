@@ -26,16 +26,13 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
   void initState() {
     super.initState();
 
-    // Try to find the controller or create a new one
     try {
       controller = Get.find<GalaxyController>();
     } catch (e) {
-      // If controller not found, create a new one
       controller = Get.put(GalaxyController());
       debugPrint('Created new GalaxyController as it was not found: $e');
     }
 
-    // Setup animations
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 30),
@@ -53,12 +50,10 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Using didChangeDependencies to ensure context is fully ready
     _loadGalaxyDetailsDelayed();
   }
 
   void _loadGalaxyDetailsDelayed() {
-    // Use Future.delayed to ensure it runs after current build cycle
     Future.delayed(Duration.zero, () {
       controller.prepareGalaxyDetails(widget.galaxyId);
     });
@@ -106,7 +101,6 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
                 ),
               ),
 
-              // Content
               SafeArea(
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
@@ -114,7 +108,6 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header with galaxy name and back button
                       Padding(
                         padding: EdgeInsets.only(
                           top: 20.h,
@@ -124,7 +117,7 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
                         child: Row(
                           children: [
                             GestureDetector(
-                              onTap: () => Get.back(),
+                              onTap: () => Navigator.of(context).pop(),
                               child: Container(
                                 padding: EdgeInsets.all(8.w),
                                 decoration: BoxDecoration(
@@ -160,11 +153,9 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
 
                       SizedBox(height: 20.h),
 
-                      // Large rotating galaxy image
                       _buildGalaxyImageSection(galaxy, Colors.blue),
                       SizedBox(height: 24.h),
 
-                      // Galaxy type and constellation
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: Row(
@@ -186,7 +177,6 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
 
                       SizedBox(height: 24.h),
 
-                      // Galaxy description
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: Container(
@@ -235,7 +225,6 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
 
                       SizedBox(height: 24.h),
 
-                      // Galaxy stats section
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: Text(
@@ -251,7 +240,6 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
 
                       SizedBox(height: 16.h),
 
-                      // Stats grid
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: GridView.count(
@@ -309,7 +297,6 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Background glow
           Container(
             width: 220.w,
             height: 220.w,
@@ -325,7 +312,6 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
             ),
           ),
 
-          // Galaxy image with rotation animation
           AnimatedBuilder(
             animation: _rotationAnimation,
             builder: (context, child) {
@@ -406,7 +392,6 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
             },
           ),
 
-          // Stars around the galaxy image
           for (int i = 0; i < 8; i++)
             AnimatedBuilder(
               animation: _animationController,
@@ -481,13 +466,7 @@ class _GalaxyDetailsScreenState extends State<GalaxyDetailsScreen>
     IconData icon,
     Color color,
   ) {
-    // Get the full color without opacity for the border
-    final borderColor = Color.fromARGB(
-      255, // Full opacity
-      color.red,
-      color.green,
-      color.blue,
-    );
+    final borderColor = Color.fromARGB(255, color.red, color.green, color.blue);
 
     return Container(
       padding: EdgeInsets.all(12.w),
@@ -582,18 +561,16 @@ class GalaxyParticlePainter extends CustomPainter {
           ..strokeWidth = 2.0
           ..strokeCap = StrokeCap.round;
 
-    // Draw swirling particles
     for (int i = 0; i < 150; i++) {
       final radius = 20 + (i % 5) * 60 + (animation * 100) % 50;
       final angle = (i * 0.1 + animation * 2) % (2 * math.pi);
       final x = size.width / 2 + radius * math.cos(angle);
       final y = size.height / 2 + radius * math.sin(angle);
 
-      // Alternate between white and the base color
       if (i % 3 == 0) {
-        paint.color = Colors.white.withOpacity(0.2 + (i % 5) * 0.1);
+        paint.color = Colors.white.withValues(alpha: 0.2 + (i % 5) * 0.1);
       } else {
-        paint.color = baseColor.withOpacity(0.1 + (i % 5) * 0.05);
+        paint.color = baseColor.withValues(alpha: 0.1 + (i % 5) * 0.05);
       }
 
       final starSize = 1.0 + (i % 3) * 0.5;

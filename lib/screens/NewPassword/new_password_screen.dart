@@ -30,7 +30,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
   }
 
   Future<void> updatePassword() async {
-    // First, validate the password fields
     if (_passwordController.text.isEmpty) {
       Get.snackbar(
         "Error",
@@ -69,7 +68,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
     });
 
     try {
-      // Get the authentication token
       String? token = await AuthService.getToken();
       if (token == null) {
         Get.snackbar(
@@ -85,10 +83,8 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         return;
       }
 
-      // Use the API endpoint from ApiConfig
       final String updatePasswordEndpoint = ApiConfig.updatePasswordEndpoint;
 
-      // Make API request to update password
       final response = await http.patch(
         Uri.parse(updatePasswordEndpoint),
         headers: {
@@ -98,12 +94,10 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         body: jsonEncode({'newPassword': _passwordController.text}),
       );
 
-      // Print the response for debugging
       print(
         "Password Update Response: ${response.statusCode} - ${response.body}",
       );
 
-      // Handle the response
       if (response.statusCode == 200) {
         Get.snackbar(
           "Success",
@@ -112,15 +106,17 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
         );
-        // Clear the text fields
         _passwordController.clear();
         _confirmPasswordController.clear();
 
-        // Wait a moment before going back
         await Future.delayed(const Duration(seconds: 1));
-        Get.back();
+        if (Get.isSnackbarOpen) {
+          Get.closeAllSnackbars();
+        }
+        if (Get.context != null) {
+          Navigator.of(Get.context!).pop();
+        }
       } else {
-        // Parse the response for error message if available
         var responseBody = jsonDecode(response.body);
         var errorMsg = responseBody['msg'] ?? "Failed to update password";
 
@@ -166,12 +162,11 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () => Get.back(),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: Stack(
         children: [
-          // Background with filter
           SizedBox.expand(
             child: Stack(
               children: [
@@ -190,7 +185,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
             ),
           ),
 
-          // Form content
           SafeArea(
             child: Padding(
               padding: EdgeInsets.all(20.w),
@@ -214,7 +208,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                     ),
                     SizedBox(height: 40.h),
 
-                    // New password field
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.1),
@@ -252,7 +245,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
 
                     SizedBox(height: 20.h),
 
-                    // Confirm password field
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.1),
@@ -291,30 +283,30 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
 
                     SizedBox(height: 40.h),
 
-                    // Update button
                     SizedBox(
                       width: double.infinity,
                       height: _isLoading ? 90.h : null,
-                      child: _isLoading 
-                          ? Center(child: EarthLoader(size: 60))
-                          : ElevatedButton(
-                              onPressed: updatePassword,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.cyanAccent,
-                                foregroundColor: Colors.black,
-                                padding: EdgeInsets.symmetric(vertical: 15.h),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.r),
+                      child:
+                          _isLoading
+                              ? Center(child: EarthLoader(size: 60))
+                              : ElevatedButton(
+                                onPressed: updatePassword,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.cyanAccent,
+                                  foregroundColor: Colors.black,
+                                  padding: EdgeInsets.symmetric(vertical: 15.h),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.r),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Update Password',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                              child: Text(
-                                'Update Password',
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                      ),
                     ),
                   ],
                 ),

@@ -116,7 +116,7 @@ class _GalaxiesListScreenState extends State<GalaxiesListScreen>
                     children: [
                       IconButton(
                         icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-                        onPressed: () => Get.back(),
+                        onPressed: () => Navigator.of(context).pop(),
                       ),
                       Text(
                         "Explore Galaxies",
@@ -224,7 +224,6 @@ class _GalaxiesListScreenState extends State<GalaxiesListScreen>
         ),
         child: Row(
           children: [
-            // Galaxy Image
             Expanded(
               flex: 2,
               child: Container(
@@ -436,7 +435,6 @@ class ParticlePainter extends CustomPainter {
           ..strokeWidth = 2.0
           ..strokeCap = StrokeCap.round;
 
-    // Draw some stars in the background with animation
     for (int i = 0; i < 100; i++) {
       final x = (i * 7.3 + animation * 100) % canvasSize.width;
       final y = (i * 9.7 + animation * 80) % canvasSize.height;

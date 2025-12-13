@@ -19,24 +19,18 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
   void initState() {
     super.initState();
 
-    // Sun rotation controller
     _sunRotationController = AnimationController(
       vsync: this,
-      duration: const Duration(
-        seconds: 60,
-      ), // Doubled the duration to slow down
+      duration: const Duration(seconds: 60),
     )..repeat();
 
-    // Define planets
     _planets.addAll([
       {
         'name': 'Mercury',
         'color': Colors.grey[300]!,
         'size': 10.0,
         'orbitRadius': 50.0,
-        'orbitDuration': const Duration(
-          seconds: 20,
-        ), // Doubled duration to slow down
+        'orbitDuration': const Duration(seconds: 20),
         'image': 'assets/images/MURCRY.png',
       },
       {
@@ -44,9 +38,7 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
         'color': Colors.orangeAccent,
         'size': 15.0,
         'orbitRadius': 80.0,
-        'orbitDuration': const Duration(
-          seconds: 30,
-        ), // Doubled duration to slow down
+        'orbitDuration': const Duration(seconds: 30),
         'image': 'assets/images/VENUS.png',
       },
       {
@@ -83,7 +75,6 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
       },
     ]);
 
-    // Create orbit controllers for each planet
     _planetOrbitControllers =
         _planets.map((planet) {
           return AnimationController(
@@ -106,8 +97,7 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final centerX = screenSize.width / 2;
-    final centerY =
-        screenSize.height / 2 - 50.h; // Move up slightly to fit info panel
+    final centerY = screenSize.height / 2 - 50.h;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -125,10 +115,8 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
       ),
       body: Stack(
         children: [
-          // Stars background
           CustomPaint(size: Size.infinite, painter: StarsPainter()),
 
-          // Sun
           Positioned(
             left: centerX - 35.w,
             top: centerY - 35.w,
@@ -160,7 +148,6 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
             ),
           ),
 
-          // Planets and their orbits
           for (var i = 0; i < _planets.length; i++)
             ..._buildPlanetWithOrbit(
               centerX,
@@ -169,7 +156,6 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
               _planetOrbitControllers[i],
             ),
 
-          // Information panel
           Positioned(
             bottom: 20.h,
             left: 20.w,
@@ -225,7 +211,6 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
             ),
           ),
 
-          // Planet labels that follow planets
           for (var i = 0; i < _planets.length; i++)
             AnimatedBuilder(
               animation: _planetOrbitControllers[i],
@@ -281,7 +266,6 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
     final planetImage = planet['image'] as String;
 
     return [
-      // Orbit path
       Positioned(
         left: centerX - orbitRadius,
         top: centerY - orbitRadius,
@@ -295,7 +279,6 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
         ),
       ),
 
-      // Planet
       AnimatedBuilder(
         animation: controller,
         builder: (context, child) {
@@ -341,7 +324,6 @@ class StarsPainter extends CustomPainter {
           ..color = Colors.white
           ..style = PaintingStyle.fill;
 
-    // Draw background stars
     for (int i = 0; i < 100; i++) {
       final x = _random.nextDouble() * size.width;
       final y = _random.nextDouble() * size.height;

@@ -88,7 +88,7 @@ class _StarsListScreenState extends State<StarsListScreen> {
                 children: [
                   IconButton(
                     icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-                    onPressed: () => Get.back(),
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
                   Text(
                     "Explore Stars",

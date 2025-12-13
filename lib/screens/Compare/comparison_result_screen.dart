@@ -21,11 +21,9 @@ class ComparisonResultScreen extends StatefulWidget {
 
 class _ComparisonResultScreenState extends State<ComparisonResultScreen>
     with TickerProviderStateMixin {
-  // Animation controllers
   late final AnimationController _planetController;
   late final AnimationController _tableController;
 
-  // Animations
   late final Animation<double> _planet1Animation;
   late final Animation<double> _planet2Animation;
   late final Animation<double> _vsAnimation;
@@ -34,19 +32,16 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
   void initState() {
     super.initState();
 
-    // Initialize planet animation controller
     _planetController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
 
-    // Initialize table animation controller
     _tableController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
 
-    // Planet 1 animation - enters from left
     _planet1Animation = Tween<double>(begin: -1.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _planetController,
@@ -54,7 +49,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
       ),
     );
 
-    // Planet 2 animation - enters from right
     _planet2Animation = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _planetController,
@@ -62,7 +56,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
       ),
     );
 
-    // VS text animation - fades in and scales up
     _vsAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _planetController,
@@ -70,7 +63,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
       ),
     );
 
-    // Start animations after a short delay
     Future.delayed(Duration(milliseconds: 200), () {
       _planetController.forward();
       Future.delayed(Duration(milliseconds: 600), () {
@@ -106,18 +98,15 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
       ),
       body: Stack(
         children: [
-          // Background
           SizedBox.expand(
             child: Stack(
               children: [
-                // Stars background
                 Image.asset(
                   'assets/images/infobg.png',
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
                 ),
-                // Gradient overlay
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -134,7 +123,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
             ),
           ),
 
-          // Content
           SafeArea(
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
@@ -149,7 +137,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
     );
   }
 
-  // Build comparison table
   Widget _buildComparisonSection() {
     return Container(
       decoration: BoxDecoration(
@@ -160,12 +147,10 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Planets images and names header
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Row(
               children: [
-                // Planet 1 header - Animated from left
                 Expanded(
                   child: AnimatedBuilder(
                     animation: _planetController,
@@ -206,7 +191,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
                   ),
                 ),
 
-                // VS divider - Animated fade in
                 AnimatedBuilder(
                   animation: _planetController,
                   builder: (context, child) {
@@ -226,7 +210,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
                   ),
                 ),
 
-                // Planet 2 header - Animated from right
                 Expanded(
                   child: AnimatedBuilder(
                     animation: _planetController,
@@ -272,7 +255,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
 
           Divider(color: Colors.white24),
 
-          // Comparison table
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
@@ -371,7 +353,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
     );
   }
 
-  // Build planet image with rotation animation
   Widget _buildPlanetImage(Planet planet, {required bool isFirstPlanet}) {
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 2 * pi),
@@ -436,7 +417,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
     );
   }
 
-  // Build comparison section title
   Widget _buildComparisonTitle(String title) {
     return AnimatedBuilder(
       animation: _tableController,
@@ -461,7 +441,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
     );
   }
 
-  // Build animated comparison row with staggered animation
   Widget _buildAnimatedComparisonRow(
     String label,
     String value1,
@@ -499,16 +478,13 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
     );
   }
 
-  // Build comparison table row content
   Widget _buildComparisonRow(String label, String value1, String value2) {
-    // Determine if values are different
     final bool isDifferent = value1 != value2;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Row(
         children: [
-          // Label
           SizedBox(
             width: 100.w,
             child: Text(
@@ -521,7 +497,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
             ),
           ),
 
-          // Value 1
           Expanded(
             child: Text(
               value1,
@@ -535,7 +510,6 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
             ),
           ),
 
-          // Value 2
           Expanded(
             child: Text(
               value2,

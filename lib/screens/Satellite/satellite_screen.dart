@@ -23,11 +23,9 @@ class _SatelliteScreenState extends State<SatelliteScreen>
   void initState() {
     super.initState();
 
-    // Try to find the controller or create a new one
     try {
       controller = Get.find<SatelliteController>();
     } catch (e) {
-      // If controller not found, create a new one
       controller = Get.put(SatelliteController());
       debugPrint('Created new SatelliteController as it was not found: $e');
     }
@@ -54,15 +52,12 @@ class _SatelliteScreenState extends State<SatelliteScreen>
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Animated Space Background
           CustomPaint(size: Size.infinite, painter: SpaceBackgroundPainter()),
 
-          // Content
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header with back button
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 20.w,
@@ -71,7 +66,7 @@ class _SatelliteScreenState extends State<SatelliteScreen>
                   child: Row(
                     children: [
                       GestureDetector(
-                        onTap: () => Get.back(),
+                        onTap: () => Navigator.of(context).pop(),
                         child: Container(
                           padding: EdgeInsets.all(8.w),
                           decoration: BoxDecoration(
@@ -102,7 +97,6 @@ class _SatelliteScreenState extends State<SatelliteScreen>
                   ),
                 ),
 
-                // Main content
                 Flexible(
                   child: Obx(() {
                     if (controller.isLoading.value) {
@@ -148,13 +142,13 @@ class _SatelliteScreenState extends State<SatelliteScreen>
           itemBuilder: (context, index) {
             final satellite = satellites[index];
 
-            // Calculate staggered animation delay
             final delayedAnimation = _slideAnimation.value - (index * 0.1);
             final offsetValue = delayedAnimation.clamp(0.0, 1.0);
 
             return Transform.translate(
               offset: Offset(offsetValue * 200, 0),
-              child: Opacity(
+              child: AnimatedOpacity(
+                duration: Duration.zero,
                 opacity: 1.0 - offsetValue,
                 child: GestureDetector(
                   onTap: () {
@@ -190,15 +184,12 @@ class _SatelliteScreenState extends State<SatelliteScreen>
                       borderRadius: BorderRadius.circular(20.r),
                       child: Stack(
                         children: [
-                          // Subtle animated shine effect
                           _buildShineEffect(),
 
-                          // Satellite content
                           Padding(
                             padding: EdgeInsets.all(12.w),
                             child: Row(
                               children: [
-                                // Satellite image
                                 Hero(
                                   tag: 'satellite-${satellite.id}',
                                   child: Container(
@@ -248,7 +239,6 @@ class _SatelliteScreenState extends State<SatelliteScreen>
                                 ),
                                 SizedBox(width: 16.w),
 
-                                // Satellite info
                                 Flexible(
                                   child: Column(
                                     crossAxisAlignment:
@@ -338,7 +328,6 @@ class _SatelliteScreenState extends State<SatelliteScreen>
                                   ),
                                 ),
 
-                                // Arrow indicator
                                 Icon(
                                   Icons.chevron_right,
                                   color: Colors.white,
@@ -360,9 +349,7 @@ class _SatelliteScreenState extends State<SatelliteScreen>
     );
   }
 
-  // Simplified shine effect
   Widget _buildShineEffect() {
-    // Create a simple overlay with animated opacity instead
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
@@ -443,13 +430,11 @@ class SpaceBackgroundPainter extends CustomPainter {
     final paint = Paint()..color = Colors.white;
     final random = DateTime.now().millisecondsSinceEpoch;
 
-    // Create stars with different sizes
     for (int i = 0; i < 200; i++) {
       final x = ((random * (i + 1)) % size.width).toDouble();
       final y = ((random * (i + 3)) % size.height).toDouble();
       final radius = ((random * (i + 5)) % 3 + 1) * 0.5;
 
-      // Every 10th star gets a glow effect
       if (i % 10 == 0) {
         final glowPaint =
             Paint()
@@ -461,7 +446,6 @@ class SpaceBackgroundPainter extends CustomPainter {
       canvas.drawCircle(Offset(x, y), radius, paint);
     }
 
-    // Create a subtle color gradient in the background
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
     final gradient = RadialGradient(
       center: Alignment.center,

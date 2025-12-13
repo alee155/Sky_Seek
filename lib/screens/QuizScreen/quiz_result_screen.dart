@@ -30,14 +30,12 @@ class QuizResultScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.home, color: Colors.white),
           onPressed: () {
-            // Go back to home screen
             Get.until((route) => route.isFirst);
           },
         ),
       ),
       body: Stack(
         children: [
-          // Background image
           SizedBox.expand(
             child: Image.asset(
               'assets/images/homescreen.png',
@@ -45,28 +43,23 @@ class QuizResultScreen extends StatelessWidget {
             ),
           ),
 
-          // Animated stars overlay
-          const Opacity(opacity: 0.5, child: StarBackground(starCount: 100)),
+          const StarBackground(starCount: 100, opacity: 0.5),
 
-          // Content
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               children: [
                 SizedBox(height: 30.h),
 
-                // Results card
                 _buildResultsCard(),
 
                 SizedBox(height: 30.h),
 
-                // Review incorrect answers button
                 if (quizController.incorrectAnswers.isNotEmpty)
                   _buildReviewButton(),
 
                 const Spacer(),
 
-                // Back to Home button
                 _buildBackToHomeButton(),
 
                 SizedBox(height: 30.h),
@@ -96,7 +89,6 @@ class QuizResultScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Level
           Row(
             children: [
               Icon(
@@ -119,7 +111,6 @@ class QuizResultScreen extends StatelessWidget {
 
           SizedBox(height: 20.h),
 
-          // Score
           Container(
             width: double.infinity,
             height: 120.h,
@@ -174,7 +165,6 @@ class QuizResultScreen extends StatelessWidget {
 
           SizedBox(height: 20.h),
 
-          // Performance message
           Text(
             _getPerformanceMessage(
               quizController.obtainedMarks.value,
@@ -230,7 +220,6 @@ class QuizResultScreen extends StatelessWidget {
   Widget _buildBackToHomeButton() {
     return ElevatedButton.icon(
       onPressed: () async {
-        // Show loading dialog using GetX
         Get.dialog(
           Dialog(
             backgroundColor: Colors.transparent,
@@ -271,13 +260,15 @@ class QuizResultScreen extends StatelessWidget {
           barrierDismissible: false,
         );
 
-        // Save result
         final success = await quizController.saveResult();
 
-        // Close dialog
-        Get.back();
+        if (Get.isSnackbarOpen) {
+          Get.closeAllSnackbars();
+        }
+        if (Get.context != null) {
+          Navigator.of(Get.context!).pop();
+        }
 
-        // Show message
         Get.snackbar(
           success ? "Success" : "Notice",
           success
@@ -293,7 +284,6 @@ class QuizResultScreen extends StatelessWidget {
           duration: const Duration(seconds: 2),
         );
 
-        // Navigate to home screen (bottom nav index 0)
         _navigateToHome();
       },
       icon: const Icon(Icons.home),
@@ -312,7 +302,6 @@ class QuizResultScreen extends StatelessWidget {
     );
   }
 
-  // Navigate to home screen (bottom nav bar index 0)
   void _navigateToHome() async {
     final token = await AuthService.getToken() ?? '';
     Get.offAll(
@@ -365,7 +354,6 @@ class QuizReviewScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          // Background image
           SizedBox.expand(
             child: Image.asset(
               'assets/images/homescreen.png',
@@ -373,10 +361,8 @@ class QuizReviewScreen extends StatelessWidget {
             ),
           ),
 
-          // Animated stars overlay
-          const Opacity(opacity: 0.5, child: StarBackground(starCount: 100)),
+          const StarBackground(starCount: 100, opacity: 0.5),
 
-          // List of incorrect answers
           ListView.builder(
             padding: EdgeInsets.all(16.r),
             itemCount: incorrectQuizzes.length,
@@ -398,7 +384,6 @@ class QuizReviewScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Question
                     Text(
                       "Q${index + 1}: ${quiz.question}",
                       style: TextStyle(
@@ -409,7 +394,6 @@ class QuizReviewScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 12.h),
 
-                    // Your answer
                     Row(
                       children: [
                         Icon(Icons.close, color: Colors.red, size: 18.sp),
@@ -441,7 +425,6 @@ class QuizReviewScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8.h),
 
-                    // Correct answer
                     Row(
                       children: [
                         Icon(Icons.check, color: Colors.green, size: 18.sp),

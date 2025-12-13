@@ -26,7 +26,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
   }
 
   Future<void> _loadFavorites() async {
-    // Get token from parameters or shared preferences
     String? token = widget.token;
     if (token == null || token.isEmpty) {
       token = await AuthService.getToken();
@@ -85,18 +84,16 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
       ),
       body: Stack(
         children: [
-          // Background with parallax effect
           SizedBox.expand(
             child: Stack(
               children: [
-                // Stars background
                 Image.asset(
                   'assets/images/infobg.png',
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
                 ),
-                // Gradient overlay
+
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -113,12 +110,10 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
             ),
           ),
 
-          // Content
           SafeArea(
             child: Padding(
               padding: EdgeInsets.all(16.w),
               child: Obx(() {
-                // Loading state - only show if we're not displaying any planets
                 if (controller.isLoading.value &&
                     controller.favoritePlanets.isEmpty) {
                   return Column(
@@ -139,7 +134,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                   );
                 }
 
-                // Error state
                 if (controller.hasError.value) {
                   return Center(
                     child: Container(
@@ -211,7 +205,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                   );
                 }
 
-                // No favorites
                 if (controller.favoritePlanets.isEmpty) {
                   return Center(
                     child: Container(
@@ -219,7 +212,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Empty state illustration
                           Stack(
                             alignment: Alignment.center,
                             children: [
@@ -299,14 +291,12 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                   );
                 }
 
-                // List of favorites with animated entry
                 return ListView.builder(
                   physics: BouncingScrollPhysics(),
                   padding: EdgeInsets.only(top: 16.h, bottom: 24.h),
                   itemCount: controller.favoritePlanets.length,
                   itemBuilder: (context, index) {
                     final planet = controller.favoritePlanets[index];
-                    // Use planet card for each item
                     return _buildPlanetCard(planet);
                   },
                 );
@@ -319,13 +309,11 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
   }
 
   Widget _buildPlanetCard(Planet planet) {
-    // Get planet order number for visual indicators
     final positionRegex = RegExp(r'(\d+)');
     final match = positionRegex.firstMatch(planet.position);
     int planetOrder =
         match != null ? (int.tryParse(match.group(0) ?? '0') ?? 0) : 0;
 
-    // Generate a gradient based on planet type
     List<Color> cardGradient;
     if (planet.type.toLowerCase().contains('gas')) {
       cardGradient = [
@@ -383,7 +371,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
             ),
             child: Stack(
               children: [
-                // Background design elements - orbit lines
                 Positioned(
                   left: -30.w,
                   top: 20.h,
@@ -400,10 +387,8 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                   ),
                 ),
 
-                // Planet content
                 Row(
                   children: [
-                    // Planet image with ring effect
                     Container(
                       width: 120.w,
                       height: 120.h,
@@ -411,7 +396,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          // Outer ring
                           Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -421,7 +405,7 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                               ),
                             ),
                           ),
-                          // Inner ring
+
                           Container(
                             width: 90.w,
                             height: 90.h,
@@ -433,7 +417,7 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                               ),
                             ),
                           ),
-                          // Planet image
+
                           Container(
                             width: 80.w,
                             height: 80.h,
@@ -509,13 +493,10 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                                       ),
                             ),
                           ),
-
-                          // Position indicator
                         ],
                       ),
                     ),
 
-                    // Planet information
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(0, 16.h, 16.w, 16.h),
@@ -523,7 +504,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Planet name with favorite indicator
                             Row(
                               children: [
                                 Expanded(
@@ -549,7 +529,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                             ),
                             SizedBox(height: 6.h),
 
-                            // Planet type with custom color
                             Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 10.w,
@@ -571,7 +550,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                             ),
                             SizedBox(height: 12.h),
 
-                            // Planet details in a card
                             Container(
                               padding: EdgeInsets.all(10.w),
                               decoration: BoxDecoration(
@@ -581,21 +559,18 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Position row
                                   _buildDetailRow(
                                     icon: Icons.public,
                                     label: "Position",
                                     value: planet.position,
                                   ),
 
-                                  // Distance row
                                   _buildDetailRow(
                                     icon: Icons.straighten,
                                     label: "Distance",
                                     value: planet.distanceFromSun,
                                   ),
 
-                                  // Moons row if available
                                   if (planet.moons != "0")
                                     _buildDetailRow(
                                       icon: Icons.brightness_2,
@@ -612,7 +587,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
                   ],
                 ),
 
-                // Habitable indicator if planet supports life
                 if (planet.supportsLife)
                   Positioned(
                     bottom: 10.h,
@@ -651,7 +625,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
     );
   }
 
-  // Helper method to build detail rows
   Widget _buildDetailRow({
     required IconData icon,
     required String label,
@@ -688,20 +661,16 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
     );
   }
 
-  /// Removes a planet from favorites
   Future<void> _removeFavorite(String planetId) async {
     try {
-      // Get token from parameters or shared preferences
       String? token = widget.token;
       if (token == null || token.isEmpty) {
         token = await AuthService.getToken();
       }
 
       if (token != null && token.isNotEmpty) {
-        // Call the controller to remove the favorite
         final result = await controller.removeFavorite(token, planetId);
 
-        // Show a message based on the result
         if (result['success'] == true) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -724,7 +693,6 @@ class _MyFavoritScreenState extends State<MyFavoritScreen> {
           );
         }
       } else {
-        // Handle no token case
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Please login to remove favorites'),

@@ -29,14 +29,12 @@ class AboutUsScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          // Background with stars
           Image.asset(
             'assets/images/infobg.png',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
           ),
-          // Gradient overlay
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -49,7 +47,6 @@ class AboutUsScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Content
           SafeArea(
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
@@ -103,7 +100,6 @@ class AboutUsScreen extends StatelessWidget {
 
                     SizedBox(height: 10.h),
 
-                    // Mission Statement
                     _buildInfoSection(
                       title: 'Our Mission',
                       content:
@@ -113,7 +109,6 @@ class AboutUsScreen extends StatelessWidget {
 
                     SizedBox(height: 10.h),
 
-                    // Brief Description
                     _buildInfoSection(
                       title: 'About the App',
                       content:

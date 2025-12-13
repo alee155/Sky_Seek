@@ -73,9 +73,7 @@ class _StarDetailsScreenState extends State<StarDetailsScreen>
       body: Stack(
         children: [
           // Animated star background
-          Positioned.fill(
-            child: Opacity(opacity: 0.7, child: StarBackground(starCount: 200)),
-          ),
+          Positioned.fill(child: StarBackground(starCount: 200, opacity: 0.7)),
 
           // Content - Using GetX widget instead of Obx for better control
           GetX<StarController>(

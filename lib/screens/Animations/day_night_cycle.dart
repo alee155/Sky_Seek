@@ -18,7 +18,7 @@ class _EarthOrbitScreenState extends State<EarthOrbitScreen>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 8),
-    )..repeat(); // Continuous orbit
+    )..repeat();
   }
 
   @override
@@ -71,7 +71,6 @@ class _EarthOrbitScreenState extends State<EarthOrbitScreen>
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // 🌍 Earth in center
             Container(
               width: 150,
               height: 150,
@@ -87,28 +86,26 @@ class _EarthOrbitScreenState extends State<EarthOrbitScreen>
               ),
               child: ClipOval(
                 child: Image.asset(
-                  'assets/images/earth.png', // <- your Earth image
+                  'assets/images/earth.png',
                   fit: BoxFit.cover,
                 ),
               ),
             ),
 
-            // ☀️ Sun orbiting
             _buildOrbitingBody(
               radius: 120,
               size: 40,
               color: Colors.orange,
               angleOffset: 0,
-              asset: 'assets/images/sun.png', // optional
+              asset: 'assets/images/sun.png',
             ),
 
-            // 🌙 Moon orbiting
             _buildOrbitingBody(
               radius: 80,
               size: 30,
               color: Colors.grey.shade300,
               angleOffset: pi,
-              asset: 'assets/images/moon.png', // optional
+              asset: 'assets/images/moon.png',
             ),
           ],
         ),

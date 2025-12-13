@@ -60,27 +60,23 @@ class _AnimationsMenuScreenState extends State<AnimationsMenuScreen>
       ),
       body: Stack(
         children: [
-          // Background effects
           SizedBox.expand(
             child: Image.asset(
               'assets/images/homescreen.png',
               fit: BoxFit.cover,
             ),
           ),
-          Opacity(opacity: 0.7, child: StarBackground(starCount: 150)),
-          Opacity(
+          StarBackground(starCount: 150, opacity: 0.7),
+          CosmicParticleBackground(
+            particleCount: 20,
             opacity: 0.4,
-            child: CosmicParticleBackground(
-              particleCount: 20,
-              colors: const [
-                Colors.tealAccent,
-                Colors.blueAccent,
-                Colors.purpleAccent,
-              ],
-            ),
+            colors: const [
+              Colors.tealAccent,
+              Colors.blueAccent,
+              Colors.purpleAccent,
+            ],
           ),
 
-          // Content
           SafeArea(
             child: FadeTransition(
               opacity: _fadeController,

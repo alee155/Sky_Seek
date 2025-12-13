@@ -32,13 +32,12 @@ class QuizResultsListScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_outlined, color: Colors.white),
           onPressed: () {
-            Get.back();
+            Navigator.of(context).pop();
           },
         ),
       ),
       body: Stack(
         children: [
-          // Background image
           SizedBox.expand(
             child: Image.asset(
               'assets/images/homescreen.png',
@@ -46,10 +45,8 @@ class QuizResultsListScreen extends StatelessWidget {
             ),
           ),
 
-          // Animated stars overlay
-          const Opacity(opacity: 0.5, child: StarBackground(starCount: 100)),
+          const StarBackground(starCount: 50),
 
-          // Content
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Obx(() {
@@ -184,7 +181,7 @@ class QuizResultsListScreen extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: 20.h),
-        // Performance summary card
+
         if (controller.results.isNotEmpty) _buildPerformanceSummary(),
         SizedBox(height: 20.h),
         // Results list
@@ -286,7 +283,7 @@ class QuizResultsListScreen extends StatelessWidget {
             ],
           ),
           SizedBox(height: 12.h),
-          // Performance indicator bar
+
           ClipRRect(
             borderRadius: BorderRadius.circular(10.r),
             child: LinearProgressIndicator(
@@ -304,13 +301,11 @@ class QuizResultsListScreen extends StatelessWidget {
   }
 
   Widget _buildResultCard(dynamic result) {
-    // Calculate score percentage
     final percentage =
         result.totalMarks > 0
             ? (result.obtainMarks / result.totalMarks) * 100
             : 0;
 
-    // Format date
     final dateFormat = DateFormat('MMM d, yyyy • h:mm a');
     final formattedDate = dateFormat.format(result.createdAt);
 
@@ -328,27 +323,9 @@ class QuizResultsListScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Date and difficulty
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.calendar_today,
-                    size: 16.sp,
-                    color: Colors.transparent,
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    formattedDate,
-                    style: TextStyle(
-                      color: Colors.transparent,
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                ],
-              ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
@@ -372,7 +349,7 @@ class QuizResultsListScreen extends StatelessWidget {
             ],
           ),
           SizedBox(height: 16.h),
-          // Score
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -421,7 +398,7 @@ class QuizResultsListScreen extends StatelessWidget {
             ],
           ),
           SizedBox(height: 8.h),
-          // Score progress bar
+
           ClipRRect(
             borderRadius: BorderRadius.circular(10.r),
             child: LinearProgressIndicator(

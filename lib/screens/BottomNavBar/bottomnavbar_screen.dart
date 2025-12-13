@@ -18,7 +18,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
   late final List<Widget> _screens;
 
-  // Navigation items data
   final List<Map<String, dynamic>> _navItems = [
     {
       'icon': Icons.public,

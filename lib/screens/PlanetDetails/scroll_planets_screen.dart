@@ -19,12 +19,10 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
     with TickerProviderStateMixin {
   final PlanetController controller = Get.put(PlanetController());
 
-  // Animation controllers
   late AnimationController _fadeController;
   late AnimationController _detailsController;
   late AnimationController _headerController;
 
-  // Animations
   late Animation<double> _headerFadeAnimation;
   late Animation<double> _headerSlideAnimation;
 
@@ -32,7 +30,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
   void initState() {
     super.initState();
 
-    // Initialize controllers
     _fadeController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 800),
@@ -48,7 +45,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
       duration: Duration(milliseconds: 600),
     );
 
-    // Header animations
     _headerFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _headerController,
@@ -63,12 +59,10 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
       ),
     );
 
-    // Start animations
     _fadeController.forward();
     _headerController.forward();
     _detailsController.forward();
 
-    // Add listener to planet controller
     ever(controller.currentPlanetIndex, (_) {
       _resetAndPlayAnimations();
     });
@@ -89,7 +83,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
     super.dispose();
   }
 
-  // Helper method to get appropriate glow color based on planet type
   Color _getPlanetGlowColor(dynamic planet) {
     if (planet.type.toLowerCase().contains('gas')) {
       return Colors.blueAccent;
@@ -112,13 +105,12 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new_sharp),
-          onPressed: () => Get.back(),
+          onPressed: () => Navigator.of(context).pop(),
           color: Colors.white,
         ),
       ),
       body: Stack(
         children: [
-          // Background with stars
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
@@ -131,9 +123,7 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                   width: double.infinity,
                   height: double.infinity,
                 ),
-                // Animated stars overlay
-                Opacity(opacity: 0.6, child: StarBackground(starCount: 300)),
-                // Gradient overlay
+                StarBackground(starCount: 300, opacity: 0.6),
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -150,7 +140,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
             ),
           ),
 
-          // Space themed accent light
           Positioned(
             top: -100,
             left: 0,
@@ -170,7 +159,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
             ),
           ),
 
-          // Space themed accent light (right side)
           Positioned(
             bottom: -50,
             right: 0,
@@ -233,14 +221,13 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                     child: Column(
                       children: [
                         100.h.verticalSpace,
-                        // Animated header
                         AnimatedBuilder(
                           animation: _headerController,
                           builder: (context, child) {
                             return Transform.translate(
                               offset: Offset(0, _headerSlideAnimation.value),
-                              child: Opacity(
-                                opacity: _headerFadeAnimation.value,
+                              child: FadeTransition(
+                                opacity: _headerFadeAnimation,
                                 child: child,
                               ),
                             );
@@ -248,10 +235,8 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                           child: _buildPlanetHeader(planet),
                         ),
 
-                        // Planet image carousel
                         _buildPlanetImage(planet),
 
-                        // Planet information with animated sections
                         _buildAnimatedSectionTitle("Physical", 0),
                         AnimatedInfoTile(
                           icon: Icons.straighten,
@@ -435,8 +420,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
           return SizedBox.shrink();
         }
 
-        // We don't need to get planet order here
-
         return Container(
           height: 90.h,
           width: double.infinity,
@@ -509,13 +492,10 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                     },
                   ),
 
-                  // Favorite button with loading indicator
                   GestureDetector(
                     onTap: () async {
-                      // Get the token from shared preferences
                       final token = await AuthService.getToken();
                       if (token != null && token.isNotEmpty) {
-                        // Call the add to favorite method
                         await controller.addToFavorite(token);
                       } else {
                         Get.snackbar(
@@ -652,9 +632,7 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
     );
   }
 
-  // Planet avatar display with enhanced solar system position information
   Widget _buildPlanetImage(planet) {
-    // Get the numeric order of the planet for the rotation speed
     final positionRegex = RegExp(r'(\d+)');
     final match = positionRegex.firstMatch(planet.position);
     int planetOrder = 0;
@@ -666,10 +644,8 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Column(
         children: [
-          // First row with avatar and position text
           Row(
             children: [
-              // Animated planet with rotation
               FadeTransition(
                 opacity: _fadeController,
                 child: SlideTransition(
@@ -686,9 +662,7 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                     imageUrl: planet.image,
                     id: planet.id,
                     size: 150,
-                    rotationDuration: Duration(
-                      seconds: 20 + (planetOrder * 3),
-                    ), // Varies rotation speed based on planet's position
+                    rotationDuration: Duration(seconds: 20 + (planetOrder * 3)),
                     glowColor: _getPlanetGlowColor(planet),
                     glowIntensity: 0.2,
                   ),
@@ -697,7 +671,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
 
               SizedBox(width: 16.w),
 
-              // Planet position indicator
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -743,7 +716,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
     );
   }
 
-  // New method to build planet header
   Widget _buildPlanetHeader(planet) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
@@ -805,12 +777,10 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
     return AnimatedBuilder(
       animation: _detailsController,
       builder: (context, child) {
-        // Calculate animation values
-        final delay = 24 * 0.05; // After all other items
+        final delay = 24 * 0.05;
         final startInterval = delay.clamp(0.0, 0.8);
         final endInterval = (startInterval + 0.3).clamp(0.0, 1.0);
 
-        // Calculate current animation value
         final animValue = _detailsController.value;
         double opacity = 0.0;
         double slideValue = 30.0;
@@ -821,7 +791,8 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
           slideValue = 30.0 * (1.0 - opacity);
         }
 
-        return Opacity(
+        return AnimatedOpacity(
+          duration: Duration.zero,
           opacity: opacity,
           child: Transform.translate(
             offset: Offset(0, slideValue),
@@ -885,17 +856,14 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
     );
   }
 
-  // Animated section title with staggered animation based on index
   Widget _buildAnimatedSectionTitle(String text, int index) {
     return AnimatedBuilder(
       animation: _detailsController,
       builder: (context, child) {
-        // Calculate animation values based on index
         final delay = index * 0.05;
         final startInterval = delay.clamp(0.0, 0.8);
         final endInterval = (startInterval + 0.2).clamp(0.0, 1.0);
 
-        // Calculate current animation value
         final animValue = _detailsController.value;
         double opacity = 0.0;
         double slideValue = 20.0;
@@ -906,7 +874,8 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
           slideValue = 20.0 * (1.0 - opacity);
         }
 
-        return Opacity(
+        return AnimatedOpacity(
+          duration: Duration.zero,
           opacity: opacity,
           child: Transform.translate(
             offset: Offset(0, slideValue),

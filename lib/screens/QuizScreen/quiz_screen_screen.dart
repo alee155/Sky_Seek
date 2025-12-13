@@ -27,12 +27,9 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Future<void> _loadQuiz() async {
-    // Reset current state
     currentQuestionIndex.value = 0;
     selectedOption.value = '';
     quizController.resetQuiz();
-
-    // Fetch quiz data
     await quizController.fetchQuizByLevel(widget.level);
   }
 
@@ -73,7 +70,6 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
       body: Stack(
         children: [
-          // Background image
           SizedBox.expand(
             child: Image.asset(
               'assets/images/homescreen.png',
@@ -81,10 +77,8 @@ class _QuizScreenState extends State<QuizScreen> {
             ),
           ),
 
-          // Animated stars overlay
-          const Opacity(opacity: 0.5, child: StarBackground(starCount: 100)),
+          const StarBackground(starCount: 100, opacity: 0.5),
 
-          // Quiz content
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Obx(() {
@@ -161,7 +155,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       ),
                       SizedBox(height: 24.h),
                       ElevatedButton(
-                        onPressed: () => Get.back(),
+                        onPressed: () => Navigator.of(context).pop(),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.tealAccent.withOpacity(0.7),
                           foregroundColor: Colors.black,
@@ -173,7 +167,6 @@ class _QuizScreenState extends State<QuizScreen> {
                 );
               }
 
-              // Quiz content when data is loaded
               return Obx(() {
                 final currentIndex = currentQuestionIndex.value;
                 if (currentIndex >= quizController.quizzes.length) {
@@ -187,13 +180,11 @@ class _QuizScreenState extends State<QuizScreen> {
 
                 final currentQuiz = quizController.quizzes[currentIndex];
 
-                // Set selected option to previously saved answer if available
                 final savedAnswer = quizController.userAnswers[currentQuiz.id];
                 if (savedAnswer != null &&
                     selectedOption.value != savedAnswer) {
                   selectedOption.value = savedAnswer;
                 } else if (savedAnswer == null) {
-                  // Reset selection when moving to a new unanswered question
                   selectedOption.value = '';
                 }
 
@@ -201,7 +192,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 150.h),
-                    // Question number indicator
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -239,7 +230,6 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                     SizedBox(height: 24.h),
 
-                    // Question text
                     Text(
                       "Question:",
                       style: TextStyle(
@@ -272,7 +262,6 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                     SizedBox(height: 24.h),
 
-                    // Options list
                     Text(
                       "Options:",
                       style: TextStyle(
@@ -284,7 +273,6 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                     SizedBox(height: 16.h),
 
-                    // Build options
                     ...currentQuiz.options.map((option) {
                       return Padding(
                         padding: EdgeInsets.only(bottom: 12.h),
@@ -300,11 +288,9 @@ class _QuizScreenState extends State<QuizScreen> {
 
                     const Spacer(),
 
-                    // Navigation buttons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Previous button
                         if (currentIndex > 0)
                           ElevatedButton.icon(
                             onPressed: () => currentQuestionIndex.value--,
@@ -318,7 +304,6 @@ class _QuizScreenState extends State<QuizScreen> {
                         else
                           const SizedBox(),
 
-                        // Next button
                         if (currentIndex < quizController.quizzes.length - 1)
                           Obx(() {
                             final currentQuiz =
@@ -331,7 +316,6 @@ class _QuizScreenState extends State<QuizScreen> {
                                 if (hasAnswered) {
                                   currentQuestionIndex.value++;
                                 } else {
-                                  // Show warning if trying to proceed without answering
                                   Get.snackbar(
                                     "Please Answer",
                                     "Select an answer before proceeding to the next question",
@@ -456,26 +440,20 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  // Save the user's answer for the current question
   void _saveCurrentAnswer(String option) {
     final currentQuiz = quizController.quizzes[currentQuestionIndex.value];
     quizController.saveAnswer(currentQuiz.id, option);
     selectedOption.value = option;
   }
 
-  // Check if all questions have been answered
   bool _areAllQuestionsAnswered() {
-    // Get the total number of questions
     final totalQuestions = quizController.quizzes.length;
 
-    // Check how many questions have answers
     final answeredQuestions = quizController.userAnswers.length;
 
-    // All questions must have answers
     return answeredQuestions >= totalQuestions;
   }
 
-  // Navigate to the results screen
   void _finishQuiz() {
     quizController.calculateScore();
     Get.to(

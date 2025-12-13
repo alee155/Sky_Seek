@@ -15,14 +15,12 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen>
     with SingleTickerProviderStateMixin {
-  // Controllers
   final ProfileController profileController = Get.find<ProfileController>();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
-  String selectedGender = 'Male'; // Default value
+  String selectedGender = 'Male';
   bool isLoading = false;
 
-  // Animation controllers
   late AnimationController _animationController;
   late Animation<double> _fadeInAnimation;
   late Animation<double> _slideAnimation;
@@ -35,18 +33,14 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   }
 
   void _initializeProfileData() {
-    // Pre-fill form with existing user data if available
     if (profileController.profile.value != null) {
       final profile = profileController.profile.value!;
       firstNameController.text = profile.firstName;
       lastNameController.text = profile.lastName;
 
-      // Handle gender with proper case matching
       String gender = profile.gender;
-      // Convert to title case (first letter capital, rest lowercase)
       if (gender.isNotEmpty) {
         gender = gender[0].toUpperCase() + gender.substring(1).toLowerCase();
-        // Only set if it's one of our valid options
         if (gender == 'Male' || gender == 'Female') {
           selectedGender = gender;
         }
@@ -72,7 +66,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
       ),
     );
 
-    // Start animations after a short delay
     Future.delayed(const Duration(milliseconds: 200), () {
       _animationController.forward();
     });
@@ -104,7 +97,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
     });
 
     try {
-      // Get token from AuthService
       final token = await AuthService.getToken();
 
       if (token == null || token.isEmpty) {
@@ -113,7 +105,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
 
       debugPrint('Using token for profile update: $token');
 
-      // Call profile update method
       final success = await profileController.updateProfile(
         token: token,
         firstName: firstNameController.text.trim(),
@@ -122,10 +113,11 @@ class _EditProfileScreenState extends State<EditProfileScreen>
       );
 
       if (success) {
-        // Force refresh the profile from API to ensure profile screen has latest data
         await profileController.refreshProfile(token);
-        // Return to previous screen on success
-        Get.back();
+        if (Get.isSnackbarOpen) {
+          Get.closeAllSnackbars();
+        }
+        Navigator.of(context).pop();
       }
     } catch (e) {
       Get.snackbar(
@@ -178,6 +170,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(color: Colors.tealAccent.withOpacity(0.5)),
+
           color: Colors.black.withOpacity(0.3),
         ),
         child: DropdownButtonHideUnderline(
@@ -233,13 +226,12 @@ class _EditProfileScreenState extends State<EditProfileScreen>
             Icons.arrow_back_ios_new_outlined,
             color: Colors.white,
           ),
-          onPressed: () => Get.back(),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background image
           SizedBox.expand(
             child: Image.asset(
               'assets/images/profile.png',
@@ -249,18 +241,16 @@ class _EditProfileScreenState extends State<EditProfileScreen>
             ),
           ),
 
-          // Animated stars overlay
-          Opacity(opacity: 0.8, child: StarBackground(starCount: 150)),
+          StarBackground(starCount: 150, opacity: 0.8),
 
-          // Main content
           SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.w),
               child: AnimatedBuilder(
                 animation: _animationController,
                 builder: (context, child) {
-                  return Opacity(
-                    opacity: _fadeInAnimation.value,
+                  return FadeTransition(
+                    opacity: _fadeInAnimation,
                     child: Transform.translate(
                       offset: Offset(0, _slideAnimation.value),
                       child: child,
@@ -295,7 +285,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                     ),
                     SizedBox(height: 30.h),
 
-                    // Form fields with glass effect background
                     ClipRRect(
                       borderRadius: BorderRadius.circular(16.r),
                       child: BackdropFilter(
@@ -372,7 +361,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
             ),
           ),
 
-          // Space themed accent light
           Positioned(
             top: -50,
             right: -100,

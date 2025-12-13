@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 class StarBackground extends StatefulWidget {
   final int starCount;
+  final double opacity;
 
-  const StarBackground({super.key, this.starCount = 100});
+  const StarBackground({super.key, this.starCount = 100, this.opacity = 1.0});
 
   @override
   State<StarBackground> createState() => _StarBackgroundState();
@@ -34,7 +35,8 @@ class _StarBackgroundState extends State<StarBackground>
           x: _random.nextDouble(),
           y: _random.nextDouble(),
           size: _random.nextDouble() * 2 + 0.5, // Size between 0.5 and 2.5
-          opacity: _random.nextDouble() * 0.7 + 0.3, // Opacity between 0.3 and 1.0
+          opacity:
+              _random.nextDouble() * 0.7 + 0.3, // Opacity between 0.3 and 1.0
           twinkleSpeed: _random.nextDouble() * 4 + 1, // Speed between 1 and 5
         ),
       );
@@ -54,7 +56,11 @@ class _StarBackgroundState extends State<StarBackground>
         animation: _controller,
         builder: (context, _) {
           return CustomPaint(
-            painter: StarPainter(stars: _stars, animation: _controller.value),
+            painter: StarPainter(
+              stars: _stars,
+              animation: _controller.value,
+              opacity: widget.opacity,
+            ),
           );
         },
       ),
@@ -65,8 +71,13 @@ class _StarBackgroundState extends State<StarBackground>
 class StarPainter extends CustomPainter {
   final List<Star> stars;
   final double animation;
+  final double opacity;
 
-  StarPainter({required this.stars, required this.animation});
+  StarPainter({
+    required this.stars,
+    required this.animation,
+    this.opacity = 1.0,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -74,14 +85,18 @@ class StarPainter extends CustomPainter {
       // Calculate star position and opacity based on animation
       final x = star.x * size.width;
       final y = star.y * size.height;
-      
+
       // Calculate twinkling effect
       final twinklePhase = (animation * star.twinkleSpeed) % 1.0;
-      final twinkleValue = sin(twinklePhase * 2 * pi) * 0.4 + 0.6; // Varies between 0.2 and 1.0
-      
-      final paint = Paint()
-        ..color = Colors.white.withOpacity(star.opacity * twinkleValue)
-        ..style = PaintingStyle.fill;
+      final twinkleValue =
+          sin(twinklePhase * 2 * pi) * 0.4 + 0.6; // Varies between 0.2 and 1.0
+
+      final paint =
+          Paint()
+            ..color = Colors.white.withOpacity(
+              star.opacity * twinkleValue * opacity,
+            )
+            ..style = PaintingStyle.fill;
 
       canvas.drawCircle(Offset(x, y), star.size, paint);
     }

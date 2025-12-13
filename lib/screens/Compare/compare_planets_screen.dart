@@ -15,15 +15,12 @@ class ComparePlanetsScreen extends StatefulWidget {
 }
 
 class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
-  // Text editing controllers for the two planet name inputs
   final TextEditingController _planet1Controller = TextEditingController();
   final TextEditingController _planet2Controller = TextEditingController();
 
-  // Loading states
   bool _isLoading = false;
   String _errorMessage = '';
 
-  // List of all available planets for suggestions
   final List<Planet> _allPlanets = [];
   bool _loadingPlanets = true;
 
@@ -40,7 +37,6 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
     super.dispose();
   }
 
-  // Load all planets for autocomplete suggestions
   Future<void> _loadAllPlanets() async {
     try {
       setState(() {
@@ -62,19 +58,15 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
     }
   }
 
-  // Compare planets using API
   Future<void> _comparePlanets() async {
-    // Reset state
     setState(() {
       _isLoading = true;
       _errorMessage = '';
     });
 
-    // Get planet names from controllers
     final String planet1Name = _planet1Controller.text.trim();
     final String planet2Name = _planet2Controller.text.trim();
 
-    // Validate inputs
     if (planet1Name.isEmpty || planet2Name.isEmpty) {
       setState(() {
         _isLoading = false;
@@ -84,7 +76,6 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
     }
 
     try {
-      // Get auth token
       final String? token = await AuthService.getToken();
 
       if (token == null || token.isEmpty) {
@@ -95,7 +86,6 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
         return;
       }
 
-      // Call the comparison API
       final result = await PlanetService.comparePlanets(
         token,
         planet1Name,
@@ -103,7 +93,6 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
       );
 
       if (result['success'] == true) {
-        // Find the Planet objects from the _allPlanets list
         final planet1Object = _findPlanetByName(planet1Name);
         final planet2Object = _findPlanetByName(planet2Name);
 
@@ -143,14 +132,12 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
     }
   }
 
-  // Find a planet by name (case insensitive)
   Planet? _findPlanetByName(String name) {
     return _allPlanets.firstWhereOrNull(
       (planet) => planet.name.toLowerCase() == name.toLowerCase(),
     );
   }
 
-  // Get planet suggestions based on input
   List<String> _getPlanetSuggestions(String query) {
     if (query.isEmpty) {
       return [];
@@ -185,18 +172,15 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
       ),
       body: Stack(
         children: [
-          // Background
           SizedBox.expand(
             child: Stack(
               children: [
-                // Stars background
                 Image.asset(
                   'assets/images/infobg.png',
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
                 ),
-                // Gradient overlay
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -213,14 +197,12 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
             ),
           ),
 
-          // Content
           SafeArea(
             child: Padding(
               padding: EdgeInsets.all(16.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Instruction text
                   Text(
                     'Enter two planet names to compare their features',
                     style: TextStyle(
@@ -232,10 +214,8 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
                   ),
                   SizedBox(height: 34.h),
 
-                  // Planet input fields
                   Column(
                     children: [
-                      // Planet 1 input
                       _buildPlanetInputField(
                         controller: _planet1Controller,
                         label: 'First Planet',
@@ -265,7 +245,6 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
                   ),
                   SizedBox(height: 24.h),
 
-                  // Compare button
                   ElevatedButton(
                     onPressed: _loadingPlanets ? null : _comparePlanets,
                     style: ElevatedButton.styleFrom(
@@ -287,7 +266,6 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
                     ),
                   ),
 
-                  // Error message if any
                   if (_errorMessage.isNotEmpty)
                     Padding(
                       padding: EdgeInsets.only(top: 16.h),
@@ -302,7 +280,6 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
                       ),
                     ),
 
-                  // Loading suggestions message
                   if (_loadingPlanets)
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -329,7 +306,6 @@ class _ComparePlanetsScreenState extends State<ComparePlanetsScreen> {
     );
   }
 
-  // Build planet input field with autocomplete
   Widget _buildPlanetInputField({
     required TextEditingController controller,
     required String label,

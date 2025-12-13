@@ -17,17 +17,14 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
   final List<Star> _stars = [];
   final Random _random = Random();
 
-  // For star field motion when user interacts
   Offset _dragOffset = Offset.zero;
   double _dragSpeed = 0;
   bool _isDragging = false;
 
-  // For shooting stars
   final List<ShootingStar> _shootingStars = [];
   int _shootingStarCount = 0;
   final int _maxShootingStars = 5;
 
-  // For constellations
   final List<Constellation> _constellations = [];
   int _activeConstellationIndex = -1;
 
@@ -35,19 +32,14 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
   void initState() {
     super.initState();
 
-    // Create animation controller
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 20),
     )..repeat();
 
-    // Generate stars
     _generateStars();
-
-    // Generate constellations
     _generateConstellations();
 
-    // Set device to fullscreen immersive mode
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   }
 
@@ -57,7 +49,7 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
         Star(
           x: _random.nextDouble(),
           y: _random.nextDouble(),
-          z: _random.nextDouble() * 3 + 0.1, // Z controls depth/size
+          z: _random.nextDouble() * 3 + 0.1,
           color: _getRandomStarColor(),
           twinkleSpeed: _random.nextDouble() * 2 + 0.5,
         ),
@@ -66,7 +58,6 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
   }
 
   void _generateConstellations() {
-    // Big Dipper
     _constellations.add(
       Constellation(
         name: 'Big Dipper',
@@ -90,32 +81,30 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
       ),
     );
 
-    // Orion
     _constellations.add(
       Constellation(
         name: 'Orion',
         stars: [
-          ConstStar(0.6, 0.15), // Top left shoulder
-          ConstStar(0.7, 0.15), // Top right shoulder
-          ConstStar(0.65, 0.25), // Belt middle
-          ConstStar(0.62, 0.25), // Belt left
-          ConstStar(0.68, 0.25), // Belt right
-          ConstStar(0.65, 0.35), // Bottom of "skirt"
-          ConstStar(0.58, 0.4), // Bottom left leg
-          ConstStar(0.72, 0.4), // Bottom right leg
+          ConstStar(0.6, 0.15),
+          ConstStar(0.7, 0.15),
+          ConstStar(0.65, 0.25),
+          ConstStar(0.62, 0.25),
+          ConstStar(0.68, 0.25),
+          ConstStar(0.65, 0.35),
+          ConstStar(0.58, 0.4),
+          ConstStar(0.72, 0.4),
         ],
         connections: [
-          [0, 2], // Left shoulder to belt
-          [1, 2], // Right shoulder to belt
-          [3, 4], // Belt left to right
-          [2, 5], // Belt to bottom of skirt
-          [5, 6], // Skirt to left leg
-          [5, 7], // Skirt to right leg
+          [0, 2],
+          [1, 2],
+          [3, 4],
+          [2, 5],
+          [5, 6],
+          [5, 7],
         ],
       ),
     );
 
-    // Cassiopeia
     _constellations.add(
       Constellation(
         name: 'Cassiopeia',
@@ -137,21 +126,16 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
   }
 
   Color _getRandomStarColor() {
-    // Realistic star colors with blue/white being most common
     final colorChance = _random.nextDouble();
 
     if (colorChance < 0.7) {
-      // White to blue-white stars (most common)
       final blueWhite = _random.nextDouble() * 40;
       return Color.fromARGB(255, 215 + blueWhite.floor(), 235, 255);
     } else if (colorChance < 0.85) {
-      // Yellow stars
       return Color.fromARGB(255, 255, 255 - _random.nextInt(40), 220);
     } else if (colorChance < 0.95) {
-      // Orange stars
       return Color.fromARGB(255, 255, 200 - _random.nextInt(30), 170);
     } else {
-      // Red stars (rare)
       return Color.fromARGB(
         255,
         255,
@@ -177,7 +161,6 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
         );
       });
 
-      // Remove shooting star after animation completes
       Future.delayed(const Duration(seconds: 2), () {
         if (mounted) {
           setState(() {
@@ -193,7 +176,7 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
     setState(() {
       _activeConstellationIndex++;
       if (_activeConstellationIndex >= _constellations.length) {
-        _activeConstellationIndex = -1; // No active constellation
+        _activeConstellationIndex = -1;
       }
     });
   }
@@ -201,7 +184,6 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
   @override
   void dispose() {
     _animationController.dispose();
-    // Restore system UI
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
   }
@@ -232,17 +214,14 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
           if (_isDragging) {
             final newOffset = details.localPosition;
             setState(() {
-              // Calculate drag speed and direction
               final dx = newOffset.dx - _dragOffset.dx;
               final dy = newOffset.dy - _dragOffset.dy;
               _dragSpeed = sqrt(dx * dx + dy * dy) * 0.01;
 
-              // Update stars based on drag
               for (var star in _stars) {
                 star.x += dx * 0.0005 * star.z;
                 star.y += dy * 0.0005 * star.z;
 
-                // Wrap around edges
                 if (star.x > 1) star.x -= 1;
                 if (star.x < 0) star.x += 1;
                 if (star.y > 1) star.y -= 1;
@@ -255,7 +234,6 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
         },
         onPanEnd: (_) {
           _isDragging = false;
-          // Chance to trigger a shooting star on pan end
           if (_random.nextDouble() < 0.3) {
             _addShootingStar();
           }
@@ -264,7 +242,6 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
         onDoubleTap: _addShootingStar,
         child: Stack(
           children: [
-            // Star field
             AnimatedBuilder(
               animation: _animationController,
               builder: (context, _) {
@@ -283,7 +260,6 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
               },
             ),
 
-            // UI Overlay
             SafeArea(
               child: Padding(
                 padding: EdgeInsets.all(16.w),
@@ -291,7 +267,6 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Spacer(),
-                    // Info panel at bottom
                     Container(
                       padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
@@ -371,24 +346,19 @@ class StarFieldPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final starPaint = Paint()..style = PaintingStyle.fill;
 
-    // Draw stars with twinkling effect
     for (var star in stars) {
-      // Calculate twinkling effect
       final twinklePhase = (animationValue * star.twinkleSpeed) % 1.0;
-      final twinkleValue =
-          sin(twinklePhase * 2 * pi) * 0.3 + 0.7; // Varies between 0.4 and 1.0
+      final twinkleValue = sin(twinklePhase * 2 * pi) * 0.3 + 0.7;
 
       final x = star.x * size.width;
       final y = star.y * size.height;
 
-      // Size based on z-depth (parallax effect)
       final displaySize = star.z;
 
       starPaint.color = star.color.withOpacity(twinkleValue);
       canvas.drawCircle(Offset(x, y), displaySize, starPaint);
     }
 
-    // Draw shooting stars
     for (var shootingStar in shootingStars) {
       final startX = shootingStar.startX * size.width;
       final startY = shootingStar.startY * size.height;
@@ -398,7 +368,6 @@ class StarFieldPainter extends CustomPainter {
       final endY =
           startY + sin(shootingStar.angle) * shootingStar.length * size.height;
 
-      // Create a gradient for the trail
       final gradient = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
@@ -419,10 +388,8 @@ class StarFieldPainter extends CustomPainter {
             ..strokeCap = StrokeCap.round
             ..style = PaintingStyle.stroke;
 
-      // Draw the trail
       canvas.drawLine(Offset(startX, startY), Offset(endX, endY), trailPaint);
 
-      // Draw the head of the shooting star
       final headPaint =
           Paint()
             ..color = Colors.white
@@ -435,9 +402,7 @@ class StarFieldPainter extends CustomPainter {
       );
     }
 
-    // Draw active constellation if available
     if (activeConstellation != null) {
-      // Draw constellation lines
       final linePaint =
           Paint()
             ..color = Colors.white.withOpacity(0.3)
@@ -449,7 +414,6 @@ class StarFieldPainter extends CustomPainter {
             ..color = Colors.yellow
             ..style = PaintingStyle.fill;
 
-      // Draw connections
       for (var connection in activeConstellation!.connections) {
         final star1 = activeConstellation!.stars[connection[0]];
         final star2 = activeConstellation!.stars[connection[1]];
@@ -461,7 +425,6 @@ class StarFieldPainter extends CustomPainter {
         );
       }
 
-      // Draw star points (slightly larger than background stars)
       for (var star in activeConstellation!.stars) {
         canvas.drawCircle(
           Offset(star.x * size.width, star.y * size.height),
@@ -524,7 +487,7 @@ class ConstStar {
 class Constellation {
   final String name;
   final List<ConstStar> stars;
-  final List<List<int>> connections; // Pairs of indices into stars array
+  final List<List<int>> connections;
 
   Constellation({
     required this.name,

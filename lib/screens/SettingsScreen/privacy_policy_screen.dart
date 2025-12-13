@@ -141,7 +141,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
                     _buildSectionTitle('7. Children\'s Privacy'),
                     _buildParagraph(
-                      'Our App is not intended for children under 13, and we do not knowingly collect data from children under 13. If we discover that a child under 13 has provided us with personal information, we will delete it immediately.',
+                      'Our app is valid for any kind of age users.',
                     ),
 
                     _buildSectionTitle('8. Changes to This Privacy Policy'),

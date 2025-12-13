@@ -29,7 +29,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     super.initState();
     controller.loadProfile(widget.token);
 
-    // Header animations
     _headerController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -45,7 +44,6 @@ class _ProfileScreenState extends State<ProfileScreen>
       end: 1,
     ).animate(CurvedAnimation(parent: _headerController, curve: Curves.easeIn));
 
-    // Avatar pulse animation
     _avatarPulseController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -53,13 +51,11 @@ class _ProfileScreenState extends State<ProfileScreen>
       upperBound: 1.1,
     )..repeat(reverse: true);
 
-    // Floating button animation (gentle float)
     _fabFloatController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
     )..repeat(reverse: true);
 
-    // Start header animation after slight delay
     Future.delayed(const Duration(milliseconds: 300), () {
       _headerController.forward();
     });
@@ -80,7 +76,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     required int index,
     Color? accentColor,
   }) {
-    // Generate a color if none provided
     final color =
         accentColor ??
         Color.fromARGB(
@@ -124,7 +119,6 @@ class _ProfileScreenState extends State<ProfileScreen>
         ),
         child: Stack(
           children: [
-            // Subtle star pattern
             Positioned(
               right: 10.w,
               top: 10.h,
@@ -134,7 +128,6 @@ class _ProfileScreenState extends State<ProfileScreen>
               ),
             ),
 
-            // Content
             ListTile(
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 16.w,
@@ -201,7 +194,6 @@ class _ProfileScreenState extends State<ProfileScreen>
         position: _headerSlide,
         child: Stack(
           children: [
-            // Background glow effect
             Positioned(
               left: 0,
               right: 0,
@@ -224,7 +216,6 @@ class _ProfileScreenState extends State<ProfileScreen>
               ),
             ),
 
-            // Main content container with glass effect
             ClipRRect(
               borderRadius: BorderRadius.circular(25.r),
               child: BackdropFilter(
@@ -254,11 +245,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Avatar with orbit ring
                       Stack(
                         alignment: Alignment.center,
                         children: [
-                          // Orbit ring
                           Container(
                             width: 95.r,
                             height: 95.r,
@@ -273,7 +262,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                               ),
                             ),
                           ),
-                          // Avatar image
                           ScaleTransition(
                             scale: _avatarPulseController,
                             child: Container(
@@ -306,7 +294,6 @@ class _ProfileScreenState extends State<ProfileScreen>
 
                       SizedBox(height: 15.h),
 
-                      // User name with cosmos icon
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -334,7 +321,6 @@ class _ProfileScreenState extends State<ProfileScreen>
 
                       SizedBox(height: 6.h),
 
-                      // Email with cosmic theme
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -356,7 +342,6 @@ class _ProfileScreenState extends State<ProfileScreen>
 
                       SizedBox(height: 12.h),
 
-                      // Explorer badge
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 16.w,

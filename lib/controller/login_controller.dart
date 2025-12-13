@@ -43,13 +43,13 @@ class LoginController extends GetxController {
       if (response.statusCode == 200) {
         final token = decoded['token'];
         final userId = decoded['userId'] ?? ''; // Get user ID if available
-        
+
         // Save token and user ID using AuthService
         await AuthService.saveToken(token);
         if (userId.isNotEmpty) {
           await AuthService.saveUserId(userId);
         }
-        
+
         Get.snackbar(
           "Success",
           msg,
