@@ -205,7 +205,7 @@ class _GalaxiesListScreenState extends State<GalaxiesListScreen>
         Get.to(
           () => GalaxyDetailsScreen(galaxyId: galaxy.id),
           transition: Transition.fadeIn,
-          duration: Duration(milliseconds: 800),
+          duration: Duration(milliseconds: 300),
         );
       },
       child: Container(

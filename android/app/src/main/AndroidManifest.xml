@@ -8,24 +8,6 @@
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label">
 
-        <!-- Override androidx-startup content provider authority -->
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="com.devsouq.skyseek.app.androidx-startup"
-            android:exported="false"
-            tools:node="merge">
-            <meta-data
-                android:name="androidx.startup"
-                android:value="androidx.startup" />
-        </provider>
-
-        <!-- Override license check content provider authority if it exists -->
-        <provider
-            android:name="com.pairip.licensecheck.LicenseContentProvider"
-            android:authorities="com.devsouq.skyseek.app.com.pairip.licensecheck.LicenseContentProvider"
-            android:exported="false"
-            tools:node="remove" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true"

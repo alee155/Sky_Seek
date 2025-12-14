@@ -51,14 +51,19 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _checkAuthAndNavigate() async {
     try {
+      debugPrint('Starting auth check and navigation...');
+
       // Wait for animations to complete
       await Future.delayed(const Duration(seconds: 3));
+      debugPrint('Animation delay completed');
 
       // Test shared preferences first
+      debugPrint('Testing SharedPreferences...');
       final sharedPrefsWorking = await AuthService.testSharedPreferences();
-      print('Shared Preferences Working: $sharedPrefsWorking');
+      debugPrint('Shared Preferences Working: $sharedPrefsWorking');
 
       if (!sharedPrefsWorking) {
+        debugPrint('SharedPreferences not working, showing warning...');
         // If shared_preferences is not working, go to login screen
         Get.snackbar(
           "Warning",
@@ -69,25 +74,35 @@ class _SplashScreenState extends State<SplashScreen>
           snackPosition: SnackPosition.BOTTOM,
         );
         await Future.delayed(Duration(seconds: 2));
+        debugPrint('Navigating to LoginScreen due to SharedPreferences issue');
         Get.offAll(() => const LoginScreen());
         return;
       }
 
       // Check if user is logged in
+      debugPrint('Checking if user is logged in...');
       final isLoggedIn = await AuthService.isLoggedIn();
       final token = await AuthService.getToken();
+      debugPrint('isLoggedIn: $isLoggedIn, token exists: ${token != null}');
 
       if (isLoggedIn && token != null) {
+        debugPrint('User is logged in, navigating to BottomNavScreen');
         // User is logged in, navigate to home screen
         Get.offAll(() => BottomNavScreen(token: token));
       } else {
+        debugPrint('User is not logged in, navigating to LoginScreen');
         // User is not logged in, navigate to login screen
         Get.offAll(() => const LoginScreen());
       }
-    } catch (e) {
-      print('Error in _checkAuthAndNavigate: $e');
+    } catch (e, stackTrace) {
+      debugPrint('Error in _checkAuthAndNavigate: $e');
+      debugPrint('Stack trace: $stackTrace');
       // In case of error, default to login screen
-      Get.offAll(() => const LoginScreen());
+      try {
+        Get.offAll(() => const LoginScreen());
+      } catch (navError) {
+        debugPrint('Navigation error: $navError');
+      }
     }
   }
 

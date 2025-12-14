@@ -70,7 +70,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
-        height: 60.h,
+        height: 80.h,
         color: Colors.black,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

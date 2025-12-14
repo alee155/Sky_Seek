@@ -50,13 +50,13 @@ class LoginController extends GetxController {
           await AuthService.saveUserId(userId);
         }
 
-        Get.snackbar(
-          "Success",
-          msg,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        // Get.snackbar(
+        //   "Success",
+        //   msg,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        //   snackPosition: SnackPosition.BOTTOM,
+        // );
         await Future.delayed(Duration(milliseconds: 500));
         Get.offAll(() => BottomNavScreen(token: token));
       } else {

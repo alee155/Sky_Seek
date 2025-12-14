@@ -5,14 +5,32 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sky_seek/screens/SplashScreen/splashscreen.dart';
 
 void main() async {
-  // Ensure Flutter is initialized
-  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    // Ensure Flutter is initialized
+    WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize shared preferences
-  await SharedPreferences.getInstance();
+    // Initialize shared preferences with error handling
+    try {
+      await SharedPreferences.getInstance();
+      debugPrint('SharedPreferences initialized successfully');
+    } catch (e) {
+      debugPrint('SharedPreferences initialization error: $e');
+    }
 
-  // Run the app
-  runApp(const MyApp());
+    // Run the app with error boundary
+    runApp(const MyApp());
+  } catch (e, stackTrace) {
+    debugPrint('Fatal error in main: $e');
+    debugPrint('Stack trace: $stackTrace');
+    // Run a minimal error app
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(child: Text('App initialization error: $e')),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {

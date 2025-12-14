@@ -82,13 +82,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   Future<void> _updateProfile() async {
     if (firstNameController.text.trim().isEmpty ||
         lastNameController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please enter both first and last name',
-        backgroundColor: Colors.red.withOpacity(0.7),
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
       return;
     }
 
@@ -103,8 +96,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
         throw Exception('Authentication token not available');
       }
 
-      debugPrint('Using token for profile update: $token');
-
       final success = await profileController.updateProfile(
         token: token,
         firstName: firstNameController.text.trim(),
@@ -114,19 +105,10 @@ class _EditProfileScreenState extends State<EditProfileScreen>
 
       if (success) {
         await profileController.refreshProfile(token);
-        if (Get.isSnackbarOpen) {
-          Get.closeAllSnackbars();
-        }
         Navigator.of(context).pop();
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to update profile: ${e.toString()}',
-        backgroundColor: Colors.red.withOpacity(0.7),
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      // Error silently handled
     } finally {
       setState(() {
         isLoading = false;

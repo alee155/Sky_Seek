@@ -142,7 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 Get.to(
                                   () => const EditProfileScreen(),
                                   transition: Transition.fadeIn,
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: const Duration(milliseconds: 300),
                                 );
                               },
                               index: 0,
@@ -154,7 +154,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 Get.to(
                                   () => const NewPasswordScreen(),
                                   transition: Transition.fadeIn,
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: const Duration(milliseconds: 300),
                                 );
                               },
                               index: 1,
@@ -166,7 +166,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 Get.to(
                                   () => const DeleteAccountScreen(),
                                   transition: Transition.fadeIn,
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: const Duration(milliseconds: 300),
                                 );
                               },
                               index: 2,
@@ -178,7 +178,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 Get.to(
                                   () => const PrivacyPolicyScreen(),
                                   transition: Transition.fadeIn,
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: const Duration(milliseconds: 300),
                                 );
                               },
                               index: 3,
@@ -190,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 Get.to(
                                   () => const TermsAndConditionsScreen(),
                                   transition: Transition.fadeIn,
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: const Duration(milliseconds: 300),
                                 );
                               },
                               index: 4,
@@ -202,7 +202,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 Get.to(
                                   () => const AboutUsScreen(),
                                   transition: Transition.fadeIn,
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: const Duration(milliseconds: 300),
                                 );
                               },
                               index: 5,

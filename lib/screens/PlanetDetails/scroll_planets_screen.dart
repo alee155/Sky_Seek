@@ -19,67 +19,13 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
     with TickerProviderStateMixin {
   final PlanetController controller = Get.put(PlanetController());
 
-  late AnimationController _fadeController;
-  late AnimationController _detailsController;
-  late AnimationController _headerController;
-
-  late Animation<double> _headerFadeAnimation;
-  late Animation<double> _headerSlideAnimation;
-
   @override
   void initState() {
     super.initState();
-
-    _fadeController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 800),
-    );
-
-    _detailsController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 1200),
-    );
-
-    _headerController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 600),
-    );
-
-    _headerFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _headerController,
-        curve: Interval(0.0, 0.8, curve: Curves.easeOut),
-      ),
-    );
-
-    _headerSlideAnimation = Tween<double>(begin: -30.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _headerController,
-        curve: Interval(0.0, 0.8, curve: Curves.easeOutCubic),
-      ),
-    );
-
-    _fadeController.forward();
-    _headerController.forward();
-    _detailsController.forward();
-
-    ever(controller.currentPlanetIndex, (_) {
-      _resetAndPlayAnimations();
-    });
-  }
-
-  void _resetAndPlayAnimations() {
-    _detailsController.reset();
-    Future.delayed(Duration(milliseconds: 100), () {
-      _detailsController.forward();
-    });
   }
 
   @override
   void dispose() {
-    _fadeController.dispose();
-    _detailsController.dispose();
-    _headerController.dispose();
     super.dispose();
   }
 
@@ -221,19 +167,7 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                     child: Column(
                       children: [
                         100.h.verticalSpace,
-                        AnimatedBuilder(
-                          animation: _headerController,
-                          builder: (context, child) {
-                            return Transform.translate(
-                              offset: Offset(0, _headerSlideAnimation.value),
-                              child: FadeTransition(
-                                opacity: _headerFadeAnimation,
-                                child: child,
-                              ),
-                            );
-                          },
-                          child: _buildPlanetHeader(planet),
-                        ),
+                        _buildPlanetHeader(planet),
 
                         _buildPlanetImage(planet),
 
@@ -243,63 +177,54 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                           title: "Planet",
                           value: planet.name,
                           index: 0,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.straighten,
                           title: "Diameter",
                           value: planet.diameter,
                           index: 1,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.public,
                           title: "Mass",
                           value: planet.mass,
                           index: 2,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.compress,
                           title: "Gravity",
                           value: planet.gravity,
                           index: 3,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.loop,
                           title: "Rotation Period",
                           value: planet.rotationPeriod,
                           index: 4,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.access_time_filled,
                           title: "Solar Day",
                           value: planet.solarDay,
                           index: 5,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.timeline,
                           title: "Orbital Period",
                           value: planet.orbitalPeriod,
                           index: 6,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.circle_outlined,
                           title: "Symbol",
                           value: planet.symbol,
                           index: 7,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.landscape,
                           title: "Surface",
                           value: planet.surface,
                           index: 8,
-                          animationController: _detailsController,
                         ),
 
                         _buildAnimatedSectionTitle("Orbital Properties", 9),
@@ -308,28 +233,24 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                           title: "Distance from Sun",
                           value: planet.distanceFromSun,
                           index: 10,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.blur_circular,
                           title: "Eccentricity",
                           value: planet.eccentricity,
                           index: 11,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.nights_stay,
                           title: "Moons",
                           value: planet.moons,
                           index: 12,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.track_changes,
                           title: "Position",
                           value: planet.position,
                           index: 13,
-                          animationController: _detailsController,
                         ),
 
                         _buildAnimatedSectionTitle("Atmosphere", 14),
@@ -338,28 +259,24 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                           title: "Composition",
                           value: planet.atmosphereComposition,
                           index: 15,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.speed,
                           title: "Pressure",
                           value: planet.atmospherePressure,
                           index: 16,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.ac_unit,
                           title: "Temperature Min",
                           value: planet.temperatureMin,
                           index: 17,
-                          animationController: _detailsController,
                         ),
                         AnimatedInfoTile(
                           icon: Icons.local_fire_department,
                           title: "Temperature Max",
                           value: planet.temperatureMax,
                           index: 18,
-                          animationController: _detailsController,
                         ),
 
                         _buildAnimatedSectionTitle("Other Features", 19),
@@ -368,7 +285,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                           title: "Rings",
                           value: planet.rings ? "Yes" : "No",
                           index: 20,
-                          animationController: _detailsController,
                           iconColor:
                               planet.rings ? Colors.amberAccent : Colors.grey,
                         ),
@@ -377,7 +293,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                           title: "Magnetic Field",
                           value: planet.magneticField ? "Yes" : "No",
                           index: 21,
-                          animationController: _detailsController,
                           iconColor:
                               planet.magneticField
                                   ? Colors.blueAccent
@@ -388,7 +303,6 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
                           title: "Supports Life",
                           value: planet.supportsLife ? "Yes" : "No",
                           index: 22,
-                          animationController: _detailsController,
                           iconColor:
                               planet.supportsLife
                                   ? Colors.greenAccent
@@ -646,27 +560,13 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
         children: [
           Row(
             children: [
-              FadeTransition(
-                opacity: _fadeController,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: Offset(-0.2, 0),
-                    end: Offset.zero,
-                  ).animate(
-                    CurvedAnimation(
-                      parent: _fadeController,
-                      curve: Curves.easeOutCubic,
-                    ),
-                  ),
-                  child: RotatingPlanet(
-                    imageUrl: planet.image,
-                    id: planet.id,
-                    size: 150,
-                    rotationDuration: Duration(seconds: 20 + (planetOrder * 3)),
-                    glowColor: _getPlanetGlowColor(planet),
-                    glowIntensity: 0.2,
-                  ),
-                ),
+              RotatingPlanet(
+                imageUrl: planet.image,
+                id: planet.id,
+                size: 150,
+                rotationDuration: Duration(seconds: 20 + (planetOrder * 3)),
+                glowColor: _getPlanetGlowColor(planet),
+                glowIntensity: 0.2,
               ),
 
               SizedBox(width: 16.w),
@@ -774,157 +674,95 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
   }
 
   Widget _buildAnimatedMultiLineTile(IconData icon, String content) {
-    return AnimatedBuilder(
-      animation: _detailsController,
-      builder: (context, child) {
-        final delay = 24 * 0.05;
-        final startInterval = delay.clamp(0.0, 0.8);
-        final endInterval = (startInterval + 0.3).clamp(0.0, 1.0);
-
-        final animValue = _detailsController.value;
-        double opacity = 0.0;
-        double slideValue = 30.0;
-
-        if (animValue >= startInterval) {
-          opacity = (animValue - startInterval) / (endInterval - startInterval);
-          if (opacity > 1.0) opacity = 1.0;
-          slideValue = 30.0 * (1.0 - opacity);
-        }
-
-        return AnimatedOpacity(
-          duration: Duration.zero,
-          opacity: opacity,
-          child: Transform.translate(
-            offset: Offset(0, slideValue),
-            child: child,
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+      padding: EdgeInsets.all(14.w),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: Colors.white10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.yellowAccent.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 2),
           ),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-        padding: EdgeInsets.all(14.w),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(color: Colors.white10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.yellowAccent.withOpacity(0.05),
-              blurRadius: 10,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Colors.yellowAccent.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Icon(icon, color: Colors.yellowAccent, size: 18.sp),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.yellowAccent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
-                SizedBox(width: 10.w),
-                Text(
-                  "Interesting Facts",
-                  style: TextStyle(
-                    color: Colors.yellowAccent,
-                    fontSize: 14.sp,
-                    fontFamily: 'SpaceGrotesk',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.h),
-            Text(
-              content,
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Poppins',
-                fontSize: 14.sp,
-                height: 1.5,
+                child: Icon(icon, color: Colors.yellowAccent, size: 18.sp),
               ),
+              SizedBox(width: 10.w),
+              Text(
+                "Interesting Facts",
+                style: TextStyle(
+                  color: Colors.yellowAccent,
+                  fontSize: 14.sp,
+                  fontFamily: 'SpaceGrotesk',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10.h),
+          Text(
+            content,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'Poppins',
+              fontSize: 14.sp,
+              height: 1.5,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildAnimatedSectionTitle(String text, int index) {
-    return AnimatedBuilder(
-      animation: _detailsController,
-      builder: (context, child) {
-        final delay = index * 0.05;
-        final startInterval = delay.clamp(0.0, 0.8);
-        final endInterval = (startInterval + 0.2).clamp(0.0, 1.0);
-
-        final animValue = _detailsController.value;
-        double opacity = 0.0;
-        double slideValue = 20.0;
-
-        if (animValue >= startInterval) {
-          opacity = (animValue - startInterval) / (endInterval - startInterval);
-          if (opacity > 1.0) opacity = 1.0;
-          slideValue = 20.0 * (1.0 - opacity);
-        }
-
-        return AnimatedOpacity(
-          duration: Duration.zero,
-          opacity: opacity,
-          child: Transform.translate(
-            offset: Offset(0, slideValue),
-            child: child,
+    return Container(
+      margin: EdgeInsets.only(top: 20.h, bottom: 10.h, left: 16.w, right: 16.w),
+      child: Row(
+        children: [
+          Container(
+            height: 20.h,
+            width: 4.w,
+            decoration: BoxDecoration(
+              color: Colors.tealAccent,
+              borderRadius: BorderRadius.circular(2.r),
+            ),
           ),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.only(
-          top: 20.h,
-          bottom: 10.h,
-          left: 16.w,
-          right: 16.w,
-        ),
-        child: Row(
-          children: [
-            Container(
-              height: 20.h,
-              width: 4.w,
-              decoration: BoxDecoration(
-                color: Colors.tealAccent,
-                borderRadius: BorderRadius.circular(2.r),
-              ),
+          SizedBox(width: 8.w),
+          Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'SpaceGrotesk',
+              shadows: [
+                Shadow(
+                  color: Colors.tealAccent.withOpacity(0.3),
+                  blurRadius: 8,
+                ),
+              ],
             ),
-            SizedBox(width: 8.w),
-            Text(
-              text,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'SpaceGrotesk',
-                shadows: [
-                  Shadow(
-                    color: Colors.tealAccent.withOpacity(0.3),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 8.w),
-            Expanded(
-              child: Container(
-                height: 1.h,
-                color: Colors.white.withOpacity(0.1),
-              ),
-            ),
-          ],
-        ),
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Container(height: 1.h, color: Colors.white.withOpacity(0.1)),
+          ),
+        ],
       ),
     );
   }
