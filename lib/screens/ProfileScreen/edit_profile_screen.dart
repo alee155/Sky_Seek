@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:sky_seek/controller/profile_controller.dart';
 import 'package:sky_seek/widgets/star_background.dart';
 import 'package:sky_seek/services/auth_service.dart';
+import 'package:sky_seek/utils/snackbar_helper.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -80,8 +81,13 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   }
 
   Future<void> _updateProfile() async {
-    if (firstNameController.text.trim().isEmpty ||
-        lastNameController.text.trim().isEmpty) {
+    if (firstNameController.text.trim().isEmpty) {
+      SnackbarHelper.showValidationError(context, 'First name');
+      return;
+    }
+
+    if (lastNameController.text.trim().isEmpty) {
+      SnackbarHelper.showValidationError(context, 'Last name');
       return;
     }
 
@@ -93,7 +99,8 @@ class _EditProfileScreenState extends State<EditProfileScreen>
       final token = await AuthService.getToken();
 
       if (token == null || token.isEmpty) {
-        throw Exception('Authentication token not available');
+        SnackbarHelper.showError(context, 'Authentication token not available');
+        return;
       }
 
       final success = await profileController.updateProfile(
@@ -108,7 +115,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
         Navigator.of(context).pop();
       }
     } catch (e) {
-      // Error silently handled
+      SnackbarHelper.showError(context, 'Failed to update profile');
     } finally {
       setState(() {
         isLoading = false;

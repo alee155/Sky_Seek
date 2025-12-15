@@ -6,6 +6,7 @@ import 'package:sky_seek/Auth/login_screen.dart';
 import 'package:sky_seek/services/auth_service.dart';
 import 'package:sky_seek/services/account_service.dart';
 import 'package:sky_seek/widgets/star_background.dart';
+import 'package:sky_seek/utils/snackbar_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
@@ -62,12 +63,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
 
   Future<void> _deleteAccount() async {
     if (!_confirmed) {
-      Get.snackbar(
-        'Confirmation Required',
+      SnackbarHelper.showWarning(
+        context,
         'Please confirm by checking the box that you understand this action cannot be undone',
-        backgroundColor: Colors.orange.withOpacity(0.8),
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
       );
       return;
     }
@@ -87,11 +85,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
       final result = await AccountService.deleteAccount(token);
 
       if (result['success']) {
-        Get.snackbar(
-          'Success',
+        SnackbarHelper.showSuccess(
+          context,
           'Your account has been deleted successfully',
-          backgroundColor: Colors.green.withOpacity(0.8),
-          colorText: Colors.white,
         );
 
         await AuthService.logout();
@@ -112,13 +108,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
               'Failed to delete account: $errorMsg (Status: $statusCode)';
         });
 
-        Get.snackbar(
-          'Error (Status: $statusCode)',
+        SnackbarHelper.showError(
+          context,
           'Failed to delete account: $errorMsg',
-          backgroundColor: Colors.red.withOpacity(0.8),
-          colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
-          duration: const Duration(seconds: 5),
         );
       }
     } catch (e) {
@@ -126,12 +118,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen>
         errorMessage = e.toString();
       });
 
-      Get.snackbar(
-        'Error',
+      SnackbarHelper.showError(
+        context,
         'Failed to delete account: ${e.toString()}',
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
       );
 
       debugPrint('Error in delete account: $e');

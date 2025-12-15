@@ -6,6 +6,7 @@ import 'package:sky_seek/models/profile_model.dart';
 import 'package:sky_seek/services/auth_service.dart';
 import 'package:sky_seek/services/profile_service.dart';
 import 'package:sky_seek/services/update_profile_service.dart';
+import 'package:sky_seek/utils/snackbar_helper.dart';
 
 class ProfileController extends GetxController {
   var profile = Rxn<ProfileModel>();
@@ -25,10 +26,18 @@ class ProfileController extends GetxController {
       } else {
         hasError.value = true;
         errorMessage.value = 'Could not load user profile';
+        final context = Get.context;
+        if (context != null) {
+          SnackbarHelper.showError(context, 'Could not load user profile');
+        }
       }
     } catch (e) {
       hasError.value = true;
       errorMessage.value = e.toString();
+      final context = Get.context;
+      if (context != null) {
+        SnackbarHelper.showError(context, 'Error loading profile');
+      }
     } finally {
       isLoading.value = false;
     }
@@ -45,10 +54,18 @@ class ProfileController extends GetxController {
       } else {
         hasError.value = true;
         errorMessage.value = 'Could not refresh profile';
+        final context = Get.context;
+        if (context != null) {
+          SnackbarHelper.showError(context, 'Could not refresh profile');
+        }
       }
     } catch (e) {
       hasError.value = true;
       errorMessage.value = e.toString();
+      final context = Get.context;
+      if (context != null) {
+        SnackbarHelper.showError(context, 'Error refreshing profile');
+      }
     } finally {
       isRefreshing.value = false;
     }
@@ -73,15 +90,27 @@ class ProfileController extends GetxController {
 
       if (result['success'] == true && result['profile'] != null) {
         profile.value = result['profile'] as ProfileModel;
+        final context = Get.context;
+        if (context != null) {
+          SnackbarHelper.showProfileUpdate(context);
+        }
         return true;
       } else {
         hasError.value = true;
         errorMessage.value = 'Failed to update profile';
+        final context = Get.context;
+        if (context != null) {
+          SnackbarHelper.showError(context, 'Failed to update profile');
+        }
         return false;
       }
     } catch (e) {
       hasError.value = true;
       errorMessage.value = e.toString();
+      final context = Get.context;
+      if (context != null) {
+        SnackbarHelper.showError(context, 'Error updating profile');
+      }
       return false;
     } finally {
       isLoading.value = false;

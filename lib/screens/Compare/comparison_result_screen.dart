@@ -497,6 +497,7 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
             ),
           ),
 
+          // Planet 1 Value
           Expanded(
             child: Text(
               value1,
@@ -510,6 +511,10 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
             ),
           ),
 
+          // 🔥 Vertical Divider (Same as top)
+          Container(width: 1, height: 18.h, color: Colors.white24),
+
+          // Planet 2 Value
           Expanded(
             child: Text(
               value2,
@@ -518,6 +523,7 @@ class _ComparisonResultScreenState extends State<ComparisonResultScreen>
                 fontSize: 12.sp,
                 fontFamily: 'Poppins',
                 fontWeight: isDifferent ? FontWeight.bold : FontWeight.normal,
+                overflow: TextOverflow.ellipsis,
               ),
               textAlign: TextAlign.center,
             ),

@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:sky_seek/services/auth_service.dart';
 import 'package:sky_seek/config/api_config.dart';
 import 'package:sky_seek/widgets/earth_loader.dart';
+import 'package:sky_seek/utils/snackbar_helper.dart';
 
 class NewPasswordScreen extends StatefulWidget {
   const NewPasswordScreen({super.key});
@@ -31,34 +32,19 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
 
   Future<void> updatePassword() async {
     if (_passwordController.text.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please enter a new password",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      SnackbarHelper.showValidationError(context, 'New password');
       return;
     }
 
     if (_passwordController.text != _confirmPasswordController.text) {
-      Get.snackbar(
-        "Error",
-        "Passwords do not match",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      SnackbarHelper.showError(context, 'Passwords do not match');
       return;
     }
 
     if (_passwordController.text.length < 6) {
-      Get.snackbar(
-        "Error",
-        "Password must be at least 6 characters long",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
+      SnackbarHelper.showError(
+        context,
+        'Password must be at least 6 characters long',
       );
       return;
     }
@@ -70,12 +56,9 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
     try {
       String? token = await AuthService.getToken();
       if (token == null) {
-        Get.snackbar(
-          "Error",
-          "Authentication token not found. Please log in again.",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
+        SnackbarHelper.showError(
+          context,
+          'Authentication token not found. Please log in again.',
         );
         setState(() {
           _isLoading = false;
@@ -99,43 +82,25 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       );
 
       if (response.statusCode == 200) {
-        Get.snackbar(
-          "Success",
-          "Password updated successfully",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        SnackbarHelper.showSuccess(context, 'Password updated successfully');
         _passwordController.clear();
         _confirmPasswordController.clear();
 
         await Future.delayed(const Duration(seconds: 1));
-        if (Get.isSnackbarOpen) {
-          Get.closeAllSnackbars();
-        }
-        if (Get.context != null) {
-          Navigator.of(Get.context!).pop();
+        if (mounted) {
+          Navigator.of(context).pop();
         }
       } else {
         var responseBody = jsonDecode(response.body);
         var errorMsg = responseBody['msg'] ?? "Failed to update password";
 
-        Get.snackbar(
-          "Error",
-          errorMsg,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        SnackbarHelper.showError(context, errorMsg);
       }
     } catch (e) {
       print("Password Update Error: $e");
-      Get.snackbar(
-        "Error",
-        "An error occurred: $e",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
+      SnackbarHelper.showError(
+        context,
+        'An error occurred while updating password',
       );
     } finally {
       setState(() {

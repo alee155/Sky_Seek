@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sky_seek/models/planet_model.dart';
 import 'package:sky_seek/services/planet_service.dart';
+import 'package:sky_seek/utils/snackbar_helper.dart';
 
 class PlanetController extends GetxController {
   var planets = <Planet>[].obs;
@@ -40,58 +41,43 @@ class PlanetController extends GetxController {
   /// Add current planet to favorites
   Future<void> addToFavorite(String token) async {
     if (planets.isEmpty || isFavoriting.value) return;
-    
+
     try {
       isFavoriting(true);
       final currentPlanet = planets[currentPlanetIndex.value];
-      
+
       // Call the service method
       final result = await PlanetService.addToFavorite(token, currentPlanet.id);
-      
+
       // Check if the message contains "already in favorites"
-      if (!result['success'] && 
-          (result['message'].toString().contains("already in favorites") || 
-           (result['data'] != null && result['data']['msg'].toString().contains("already in favorites")))) {
-        Get.snackbar(
-          'Already in Favorites',
-          'Planet already in favorites',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange.withOpacity(0.7),
-          colorText: Colors.white,
-          duration: const Duration(seconds: 2),
-        );
+      if (!result['success'] &&
+          (result['message'].toString().contains("already in favorites") ||
+              (result['data'] != null &&
+                  result['data']['msg'].toString().contains(
+                    "already in favorites",
+                  )))) {
+        final context = Get.context;
+        if (context != null) {
+          SnackbarHelper.showWarning(context, 'Planet already in favorites');
+        }
         return;
       }
-      
+
       // Show message based on result
-      if (result['success']) {
-        Get.snackbar(
-          'Success',
-          result['message'],
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green.withOpacity(0.7),
-          colorText: Colors.white,
-          duration: const Duration(seconds: 2),
-        );
-      } else {
-        Get.snackbar(
-          'Error',
-          result['message'],
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red.withOpacity(0.7),
-          colorText: Colors.white,
-          duration: const Duration(seconds: 2),
-        );
+      final context = Get.context;
+      if (context != null) {
+        if (result['success']) {
+          SnackbarHelper.showSuccess(context, result['message']);
+        } else {
+          SnackbarHelper.showError(context, result['message']);
+        }
       }
     } catch (e) {
       debugPrint('Error adding to favorites: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to add planet to favorites',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withOpacity(0.7),
-        colorText: Colors.white,
-      );
+      final context = Get.context;
+      if (context != null) {
+        SnackbarHelper.showError(context, 'Failed to add planet to favorites');
+      }
     } finally {
       isFavoriting(false);
     }
@@ -101,14 +87,14 @@ class PlanetController extends GetxController {
     try {
       isLoading(true);
       final result = await PlanetService.fetchPlanets();
-      
+
       // Sort planets by their position in the solar system
       result.sort((a, b) {
         int positionA = _getPlanetOrderNumber(a.position);
         int positionB = _getPlanetOrderNumber(b.position);
         return positionA.compareTo(positionB);
       });
-      
+
       planets.assignAll(result);
       print("Fetched Planets: ${result.length}");
       for (var planet in result) {

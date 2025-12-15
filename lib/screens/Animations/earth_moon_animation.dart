@@ -14,37 +14,37 @@ class _EarthMoonAnimationState extends State<EarthMoonAnimation>
   late AnimationController _earthRotationController;
   late AnimationController _moonOrbitController;
   late AnimationController _starTwinkleController;
-  
+
   // Stars data
   final List<Map<String, dynamic>> _stars = [];
   final Random _random = Random();
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // Earth rotation - completes in 24 seconds
     _earthRotationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 24),
     )..repeat();
-    
+
     // Moon orbit - completes in 60 seconds
     _moonOrbitController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 60),
     )..repeat();
-    
+
     // Star twinkling
     _starTwinkleController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
     )..repeat(reverse: true);
-    
+
     // Generate random stars
     _generateStars();
   }
-  
+
   void _generateStars() {
     for (int i = 0; i < 100; i++) {
       _stars.add({
@@ -67,26 +67,23 @@ class _EarthMoonAnimationState extends State<EarthMoonAnimation>
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     // Earth size and position
     final earthSize = screenWidth * 0.4;
     final centerX = screenWidth / 2;
     final centerY = screenWidth * 0.7;
-    
+
     // Moon size and orbit
-    final moonSize = earthSize * 0.27;  // Moon is about 27% of Earth's size
-    final orbitRadius = screenWidth * 0.3;  // Orbit radius
-    
+    final moonSize = earthSize * 0.27; // Moon is about 27% of Earth's size
+    final orbitRadius = screenWidth * 0.3; // Orbit radius
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
           'Earth & Moon',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20.sp,
-          ),
+          style: TextStyle(color: Colors.white, fontSize: 20.sp),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -109,7 +106,7 @@ class _EarthMoonAnimationState extends State<EarthMoonAnimation>
               );
             },
           ),
-          
+
           // Earth
           Positioned(
             left: centerX - earthSize / 2,
@@ -141,7 +138,7 @@ class _EarthMoonAnimationState extends State<EarthMoonAnimation>
               },
             ),
           ),
-          
+
           // Moon orbit path (subtle circle)
           Positioned(
             left: centerX - orbitRadius,
@@ -158,7 +155,7 @@ class _EarthMoonAnimationState extends State<EarthMoonAnimation>
               ),
             ),
           ),
-          
+
           // Moon
           AnimatedBuilder(
             animation: _moonOrbitController,
@@ -167,7 +164,7 @@ class _EarthMoonAnimationState extends State<EarthMoonAnimation>
               final angle = _moonOrbitController.value * 2 * pi;
               final moonX = centerX + cos(angle) * orbitRadius - moonSize / 2;
               final moonY = centerY + sin(angle) * orbitRadius - moonSize / 2;
-              
+
               return Positioned(
                 left: moonX,
                 top: moonY,
@@ -192,10 +189,10 @@ class _EarthMoonAnimationState extends State<EarthMoonAnimation>
               );
             },
           ),
-          
+
           // Information panel
           Positioned(
-            bottom: 30.h,
+            bottom: 70.h,
             left: 20.w,
             right: 20.w,
             child: Container(
@@ -257,9 +254,9 @@ class _EarthMoonAnimationState extends State<EarthMoonAnimation>
 class StarFieldPainter extends CustomPainter {
   final List<Map<String, dynamic>> stars;
   final double twinkleValue;
-  
+
   StarFieldPainter({required this.stars, required this.twinkleValue});
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     for (var star in stars) {
@@ -267,18 +264,19 @@ class StarFieldPainter extends CustomPainter {
       final y = star['y'] * size.height;
       final starSize = star['size'] as double;
       final baseOpacity = star['opacity'] as double;
-      
+
       // Calculate twinkling effect
       final opacity = baseOpacity * (0.5 + twinkleValue * 0.5);
-      
-      final paint = Paint()
-        ..color = Colors.white.withOpacity(opacity)
-        ..style = PaintingStyle.fill;
-        
+
+      final paint =
+          Paint()
+            ..color = Colors.white.withOpacity(opacity)
+            ..style = PaintingStyle.fill;
+
       canvas.drawCircle(Offset(x, y), starSize, paint);
     }
   }
-  
+
   @override
   bool shouldRepaint(StarFieldPainter oldDelegate) {
     return oldDelegate.twinkleValue != twinkleValue;

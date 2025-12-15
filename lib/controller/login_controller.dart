@@ -6,6 +6,7 @@ import 'package:sky_seek/models/login_model.dart';
 import 'package:sky_seek/screens/BottomNavBar/bottomnavbar_screen.dart';
 import 'package:sky_seek/services/auth_service.dart';
 import 'package:sky_seek/services/login_service.dart';
+import 'package:sky_seek/utils/snackbar_helper.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -17,13 +18,10 @@ class LoginController extends GetxController {
     // Validate
     if (emailController.text.trim().isEmpty ||
         passwordController.text.isEmpty) {
-      Get.snackbar(
-        "Validation Error",
-        "Email and password are required.",
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      final context = Get.context;
+      if (context != null) {
+        SnackbarHelper.showValidationError(context, 'Email and password');
+      }
       isLoading.value = false;
       return;
     }
@@ -42,41 +40,32 @@ class LoginController extends GetxController {
 
       if (response.statusCode == 200) {
         final token = decoded['token'];
-        final userId = decoded['userId'] ?? ''; // Get user ID if available
+        final userId = decoded['userId'] ?? '';
+        final userName = decoded['firstName'] ?? 'User';
 
-        // Save token and user ID using AuthService
         await AuthService.saveToken(token);
         if (userId.isNotEmpty) {
           await AuthService.saveUserId(userId);
         }
 
-        // Get.snackbar(
-        //   "Success",
-        //   msg,
-        //   backgroundColor: Colors.green,
-        //   colorText: Colors.white,
-        //   snackPosition: SnackPosition.BOTTOM,
-        // );
-        await Future.delayed(Duration(milliseconds: 500));
         Get.offAll(() => BottomNavScreen(token: token));
+
+        await Future.delayed(const Duration(milliseconds: 300));
+        final context = Get.context;
+        if (context != null) {
+          SnackbarHelper.showWelcome(context, userName);
+        }
       } else {
-        Get.snackbar(
-          "Login Failed",
-          msg,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        final context = Get.context;
+        if (context != null) {
+          SnackbarHelper.showError(context, msg);
+        }
       }
     } catch (e) {
-      print("Login Error: $e");
-      Get.snackbar(
-        "Error",
-        e.toString(),
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      final context = Get.context;
+      if (context != null) {
+        SnackbarHelper.showError(context, 'Login failed. Please try again.');
+      }
     } finally {
       isLoading.value = false;
     }

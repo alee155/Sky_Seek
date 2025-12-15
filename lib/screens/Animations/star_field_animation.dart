@@ -318,6 +318,7 @@ class _StarFieldAnimationState extends State<StarFieldAnimation>
                         ],
                       ),
                     ),
+                    50.h.verticalSpace,
                   ],
                 ),
               ),

@@ -121,7 +121,7 @@ class _AnimationsMenuScreenState extends State<AnimationsMenuScreen>
                                 () => Get.to(
                                   () => const EarthMoonAnimation(),
                                   transition: Transition.fadeIn,
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: const Duration(milliseconds: 300),
                                 ),
                           ),
                           _buildAnimationCard(
@@ -136,7 +136,7 @@ class _AnimationsMenuScreenState extends State<AnimationsMenuScreen>
                                 () => Get.to(
                                   () => const SolarSystemAnimation(),
                                   transition: Transition.fadeIn,
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: const Duration(milliseconds: 300),
                                 ),
                           ),
                           // _buildAnimationCard(
@@ -161,7 +161,7 @@ class _AnimationsMenuScreenState extends State<AnimationsMenuScreen>
                                 () => Get.to(
                                   () => const StarFieldAnimation(),
                                   transition: Transition.fadeIn,
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: const Duration(milliseconds: 300),
                                 ),
                           ),
                         ],
