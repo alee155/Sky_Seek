@@ -132,12 +132,56 @@ class ShootingStarPainter extends CustomPainter {
         // Draw a brighter point at the leading edge
         final headPaint =
             Paint()
-              ..color = Colors.white.withOpacity(opacity)
+              ..shader = RadialGradient(
+                colors: [
+                  Colors.white.withOpacity(opacity),
+                  Colors.blue.withOpacity(0.9 * opacity),
+                  Colors.blue.withOpacity(0.0),
+                ],
+                stops: const [0.0, 0.6, 1.0],
+              ).createShader(
+                Rect.fromCircle(
+                  center: Offset(endX, endY),
+                  radius: star.thickness * 3,
+                ),
+              )
               ..style = PaintingStyle.fill;
 
-        canvas.drawCircle(Offset(endX, endY), star.thickness * 1.5, headPaint);
+        final starPath = createStarPath(
+          center: Offset(endX, endY),
+          radius: star.thickness * 2.5,
+        );
+
+        canvas.drawPath(starPath, headPaint);
       }
     }
+  }
+
+  Path createStarPath({
+    required Offset center,
+    required double radius,
+    int points = 5,
+  }) {
+    final path = Path();
+    final angle = pi / points;
+
+    for (int i = 0; i < points * 2; i++) {
+      final isEven = i.isEven;
+      final r = isEven ? radius : radius / 2;
+      final a = i * angle - pi / 2;
+
+      final x = center.dx + r * cos(a);
+      final y = center.dy + r * sin(a);
+
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+
+    path.close();
+    return path;
   }
 
   @override

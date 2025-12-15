@@ -157,9 +157,9 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
             ),
 
           Positioned(
-            bottom: 70.h,
-            left: 20.w,
-            right: 20.w,
+            top: 0.h,
+            left: 5.w,
+            right: 5.w,
             child: Container(
               padding: EdgeInsets.all(15.w),
               decoration: BoxDecoration(
@@ -187,7 +187,7 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
                     '• The Sun contains 99.86% of the mass in the solar system',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.8),
-                      fontSize: 12.sp,
+                      fontSize: 10.sp,
                     ),
                   ),
                   SizedBox(height: 4.h),
@@ -195,7 +195,7 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
                     '• Jupiter is the largest planet, over 1000 Earths could fit inside it',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.8),
-                      fontSize: 12.sp,
+                      fontSize: 10.sp,
                     ),
                   ),
                   SizedBox(height: 4.h),
@@ -203,7 +203,7 @@ class _SolarSystemAnimationState extends State<SolarSystemAnimation>
                     '• It takes 8 minutes for light from the Sun to reach Earth',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.8),
-                      fontSize: 12.sp,
+                      fontSize: 10.sp,
                     ),
                   ),
                 ],

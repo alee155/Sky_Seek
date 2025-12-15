@@ -8,12 +8,12 @@ class CosmicParticleBackground extends StatefulWidget {
 
   const CosmicParticleBackground({
     super.key,
-    this.particleCount = 50,
+    this.particleCount = 120,
     this.colors = const [
-      Colors.tealAccent,
-      Colors.purpleAccent,
+      Colors.red,
+      Colors.amber,
       Colors.blueAccent,
-      Colors.pinkAccent,
+      Colors.green,
     ],
     this.opacity = 1.0,
   });
