@@ -107,6 +107,7 @@ class _StarsListScreenState extends State<StarsListScreen> {
           // Stars List
           Positioned.fill(
             top: 120.h,
+            bottom: 50.h,
             child: GetX<StarController>(
               builder: (_) {
                 if (controller.isLoading.value) {

@@ -335,7 +335,7 @@ class _ScrollPlanetsScreenState extends State<ScrollPlanetsScreen>
         }
 
         return Container(
-          height: 90.h,
+          height: 120.h,
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.black,

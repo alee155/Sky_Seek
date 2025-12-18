@@ -374,7 +374,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           }),
                       ],
                     ),
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 50.h),
                   ],
                 );
               });
